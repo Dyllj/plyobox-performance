@@ -363,9 +363,17 @@ function AttendanceView({ search, onToast }: { search: string; onToast: (message
   );
 }
 
-function MiniBarChart({ dual = false, labels }: { dual?: boolean; labels?: string[] }) {
+function MiniBarChart({
+  dual = false,
+  labels,
+  label,
+}: {
+  dual?: boolean;
+  labels?: string[];
+  label?: string;
+}) {
   return (
-    <div aria-label={dual ? "Collections compared with expenses over six months" : "Check-ins over the last seven days"} className={`mini-bar-chart${dual ? " is-dual" : ""}`} role="img">
+    <div aria-label={label ?? (dual ? "Collections compared with expenses over six months" : "Check-ins over the last seven days")} className={`mini-bar-chart${dual ? " is-dual" : ""}`} role="img">
       {weeklyRevenue.slice(0, labels?.length ?? 7).map((item, index) => (
         <div className="mini-bar-group" key={item.day}>
           <div className="mini-bar-pair">
@@ -534,7 +542,7 @@ function ReportsView({ onToast }: { onToast: (message: string) => void }) {
       <PageIntro eyebrow="BUSINESS HEALTH" title="Reports" description="A clear picture of gym revenue, attendance and membership growth." action="Export report" onAction={() => onToast("Report export is a prototype action.")} />
       <div className="report-tabs filter-pills" role="group" aria-label="Report type">{(["Revenue", "Attendance", "Memberships"] as const).map((item) => <button aria-pressed={report === item} className={`filter-pill${report === item ? " is-active" : ""}`} key={item} onClick={() => setReport(item)} type="button">{item}</button>)}</div>
       <div className="report-metric-grid">{reportData.metrics.map(([label, value, hint, tone]) => <MiniMetric key={label} label={label} value={value} hint={hint} tone={tone as "neutral" | "lime" | "amber"} />)}</div>
-      <article className="panel report-chart-panel"><div className="panel-heading"><div><p className="eyebrow">{reportData.eyebrow}</p><h3>{reportData.title}</h3></div><div className="chart-key"><span>{reportData.keys[0]}</span><span>{reportData.keys[1]}</span></div></div><MiniBarChart dual labels={reportData.labels} /><div className="chart-caption">{report === "Revenue" ? "Monthly totals · Philippine peso (PHP)" : report === "Attendance" ? "Daily visits · all check-in methods" : "Monthly member activity · active records"}</div></article>
+      <article className="panel report-chart-panel"><div className="panel-heading"><div><p className="eyebrow">{reportData.eyebrow}</p><h3>{reportData.title}</h3></div><div className="chart-key"><span>{reportData.keys[0]}</span><span>{reportData.keys[1]}</span></div></div><MiniBarChart dual labels={reportData.labels} label={`${report} report: ${reportData.title}`} /><div className="chart-caption">{report === "Revenue" ? "Monthly totals · Philippine peso (PHP)" : report === "Attendance" ? "Daily visits · all check-in methods" : "Monthly member activity · active records"}</div></article>
       <div className="report-insight"><span className="insight-icon">✦</span><p><strong>{report === "Revenue" ? "Memberships are driving growth." : report === "Attendance" ? "Member visits are trending upward." : "Member renewals remain healthy."}</strong> {report === "Revenue" ? "Monthly plans make up 68% of collections this period." : report === "Attendance" ? "Saturday is the busiest day in this preview." : "Monthly plans account for most active memberships."}</p><span className="insight-trend">↗ 8.4%</span></div>
     </>
   );
@@ -636,14 +644,18 @@ function UsersView({ onToast }: { onToast: (message: string) => void }) {
 
 function AuditView({ search }: { search: string }) {
   const [filter, setFilter] = useState("All");
+  const [userFilter, setUserFilter] = useState("");
   const rows = auditRows.filter((row) => {
     const query = search.trim().toLowerCase();
-    return (filter === "All" || row.type === filter) && (!query || `${row.user} ${row.action} ${row.record}`.toLowerCase().includes(query));
+    const userQuery = userFilter.trim().toLowerCase();
+    const matchesText = !query || `${row.user} ${row.action} ${row.record}`.toLowerCase().includes(query);
+    const matchesUser = !userQuery || row.user.toLowerCase().includes(userQuery);
+    return (filter === "All" || row.type === filter) && matchesText && matchesUser;
   });
   return (
     <>
       <PageIntro eyebrow="ACCOUNTABILITY" title="Audit log" description="A time-stamped record of sensitive actions in the dashboard." />
-      <article className="panel table-panel"><div className="table-toolbar"><div className="filter-pills" role="group" aria-label="Filter audit events">{["All", "Payments", "Pricing", "Accounts", "Attendance"].map((item) => <button aria-pressed={filter === item} className={`filter-pill${filter === item ? " is-active" : ""}`} key={item} onClick={() => setFilter(item === "Accounts" ? "Accounts" : item)} type="button">{item}</button>)}</div><label className="audit-filter"><Filter size={14} /><input aria-label="Filter audit events by user" placeholder="Filter by user..." /></label></div>
+      <article className="panel table-panel"><div className="table-toolbar"><div className="filter-pills" role="group" aria-label="Filter audit events">{["All", "Payments", "Pricing", "Accounts", "Attendance"].map((item) => <button aria-pressed={filter === item} className={`filter-pill${filter === item ? " is-active" : ""}`} key={item} onClick={() => setFilter(item)} type="button">{item}</button>)}</div><label className="audit-filter"><Filter size={14} /><input aria-label="Filter audit events by user" onChange={(event) => setUserFilter(event.target.value)} placeholder="Filter by user..." value={userFilter} /></label></div>
         <div className="table-scroll"><table><thead><tr><th>TIME</th><th>USER</th><th>ACTION</th><th>RECORD</th><th>MODULE</th></tr></thead><tbody>{rows.map((row) => <tr key={`${row.time}-${row.record}`}><td>{row.time}</td><td>{row.user}</td><td className="table-person">{row.action}</td><td>{row.record}</td><td><span className="type-tag">{row.type}</span></td></tr>)}{rows.length === 0 && <EmptyRow colSpan={5} text="No audit events match this filter." />}</tbody></table></div>
       </article>
       <p className="inline-policy"><ShieldCheck size={15} /> Audit records are retained for security and operational accountability.</p>

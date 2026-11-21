@@ -33,7 +33,7 @@ export default function Topbar({
   return (
     <header className="topbar">
       <div className="topbar-left">
-        <button aria-expanded={menuOpen} aria-label="Open navigation" className="icon-button menu-button" onClick={onMenuClick} type="button">
+        <button aria-expanded={menuOpen} aria-label={menuOpen ? "Close navigation" : "Open navigation"} className="icon-button menu-button" onClick={onMenuClick} type="button">
           <Menu size={20} />
         </button>
         <div className="breadcrumbs">
@@ -100,6 +100,7 @@ export default function Topbar({
 
         <div className="role-picker-wrap">
           <button
+            aria-label={`Current role: ${role}. Change role`}
             aria-expanded={roleMenuOpen}
             className="role-picker"
             onClick={() => setRoleMenuOpen((open) => !open)}

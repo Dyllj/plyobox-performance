@@ -24,7 +24,9 @@ export default function Sidebar({
     <>
       <button
         aria-label="Close navigation"
+        aria-hidden={!isOpen}
         className={`sidebar-scrim${isOpen ? " is-visible" : ""}`}
+        disabled={!isOpen}
         onClick={onClose}
         tabIndex={isOpen ? 0 : -1}
         type="button"
