@@ -1,0 +1,313 @@
+/* Shared building blocks: buttons, cards, photos, headings, tags. */
+
+/* ---------- Buttons ---------- */
+.button {
+  position: relative;
+  display: inline-flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: var(--pill);
+  padding: 0.65rem 1.25rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    box-shadow 240ms ease,
+    transform 200ms var(--ease-out);
+}
+
+.button svg {
+  width: 1.1em;
+  height: 1.1em;
+  flex: none;
+  transition: transform 260ms var(--ease-out);
+}
+
+.button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.button:disabled {
+  color: var(--subtle);
+  cursor: not-allowed;
+}
+
+.button-full {
+  width: 100%;
+}
+
+.button-lime {
+  background: var(--lime);
+  color: var(--lime-ink);
+}
+
+/* Diagonal shine that sweeps across on hover. */
+.button-lime::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 45%) 50%, transparent 70%);
+  content: "";
+  translate: -120% 0;
+  pointer-events: none;
+}
+
+.button-outline {
+  border-color: var(--line);
+  background: transparent;
+  color: var(--text);
+}
+
+.button-dark {
+  background: #11120c;
+  color: var(--text);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .button:hover:not(:disabled) {
+    transform: translateY(-2px);
+  }
+
+  .button:hover:not(:disabled) svg {
+    transform: translateX(3px);
+  }
+
+  .button-lime:hover:not(:disabled) {
+    box-shadow: 0 10px 30px rgb(var(--lime-rgb) / 28%);
+  }
+
+  .button-lime:hover:not(:disabled)::after {
+    translate: 120% 0;
+    transition: translate 700ms ease;
+  }
+
+  .button-outline:hover:not(:disabled) {
+    border-color: var(--lime);
+    color: var(--lime);
+  }
+
+  .button-dark:hover:not(:disabled) {
+    box-shadow: 0 10px 26px rgb(0 0 0 / 35%);
+  }
+}
+
+/* ---------- Cards (lift + cursor-follow spotlight) ---------- */
+.card {
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  transition:
+    border-color 220ms ease,
+    box-shadow 260ms ease,
+    transform 300ms var(--ease-out);
+}
+
+.card::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 0%),
+    rgb(var(--lime-rgb) / 11%),
+    transparent 62%
+  );
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 300ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    border-color: var(--line-strong);
+    box-shadow: 0 18px 40px rgb(0 0 0 / 28%);
+    transform: translateY(-5px);
+  }
+
+  .card:hover::before {
+    opacity: 1;
+  }
+}
+
+/* ---------- Photo (placeholder or real image) ---------- */
+.photo {
+  --stripe-a: #1d1f17;
+  --stripe-b: #22241b;
+  position: relative;
+  display: grid;
+  min-width: 0;
+  min-height: 110px;
+  overflow: hidden;
+  place-items: center;
+  border: 1px solid #34362a;
+  background:
+    linear-gradient(140deg, rgb(var(--lime-rgb) / 5%), transparent 58%),
+    repeating-linear-gradient(130deg, var(--stripe-a) 0 9px, var(--stripe-b) 9px 15px);
+  color: #8e9282;
+  transition:
+    border-color 220ms ease,
+    filter 260ms ease,
+    scale 400ms var(--ease-out);
+}
+
+.photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale 700ms var(--ease-out);
+}
+
+/* Bottom shade + travelling sheen */
+.photo::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgb(10 11 8 / 30%));
+  content: "";
+  pointer-events: none;
+}
+
+.photo::before {
+  position: absolute;
+  z-index: 1;
+  inset: -20% -50%;
+  background: linear-gradient(110deg, transparent 42%, rgb(255 255 255 / 7%) 50%, transparent 58%);
+  content: "";
+  translate: -100% 0;
+  pointer-events: none;
+}
+
+.photo-label {
+  z-index: 1;
+  max-width: 90%;
+  padding: 0.3rem;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.photo-lime {
+  --stripe-a: #a8cf2c;
+  --stripe-b: #b4dc31;
+  border: 0;
+  background:
+    linear-gradient(120deg, rgb(var(--lime-rgb) / 25%), transparent),
+    repeating-linear-gradient(130deg, var(--stripe-a) 0 11px, var(--stripe-b) 11px 19px);
+  color: #222710;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .photo:hover {
+    filter: brightness(1.15);
+    scale: 1.015;
+  }
+
+  .photo:hover img {
+    scale: 1.07;
+  }
+
+  .photo:hover::before {
+    translate: 100% 0;
+    transition: translate 900ms ease;
+  }
+}
+
+/* ---------- Headings, tags ---------- */
+.eyebrow {
+  margin-bottom: 1rem;
+  color: var(--lime);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.section-heading {
+  margin-bottom: 2rem;
+}
+
+.section-heading .eyebrow {
+  margin-bottom: 0.75rem;
+}
+
+.section-heading h2 {
+  max-width: 19ch;
+}
+
+.section-intro {
+  max-width: 37rem;
+  margin-top: 0.85rem;
+  color: var(--muted);
+}
+
+.section-heading-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.section-heading-row .section-heading {
+  margin-bottom: 0;
+}
+
+@media (max-width: 520px) {
+  .section-heading-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+/* ---------- Marquee ticker ---------- */
+.marquee {
+  overflow: hidden;
+  background: var(--lime);
+  color: #11120b;
+  white-space: nowrap;
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 32s linear infinite;
+}
+
+.marquee-group {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 1.1rem;
+  padding: 0.7rem 0.55rem;
+  font-family: var(--display);
+  font-size: clamp(0.88rem, 1.6vw, 1.18rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+.marquee-group i {
+  font-size: 0.75em;
+  font-style: normal;
+}
+
+@media (hover: hover) {
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+}

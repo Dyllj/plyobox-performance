@@ -1,0 +1,43 @@
+/* Design tokens: the single source of truth for color, radius, motion. */
+:root {
+  color-scheme: dark;
+
+  --ground: #0d0e0b;
+  --ground-raised: #12130f;
+  --ground-deep: #090a08;
+  --card: #1b1c15;
+  --card-soft: #202119;
+  --line: #2c2e25;
+  --line-strong: #555a40;
+  --text: #f2f3ec;
+  --muted: #a9aca0;
+  --subtle: #777a70;
+  --lime: #c6f135;
+  --lime-ink: #10110b;
+  --lime-deep: #667a27;
+  --lime-rgb: 198 241 53;
+
+  --sans: var(--font-body), Arial, Helvetica, sans-serif;
+  --display: var(--font-heading), Arial, Helvetica, sans-serif;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 19px;
+  --pill: 999px;
+
+  --header-h: 76px;
+  --wrap: 1170px;
+
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Lets <details> content animate to `height: auto` (progressive enhancement). */
+  interpolate-size: allow-keywords;
+}
+
+/* Typed property so the featured card's border gradient can rotate. */
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}

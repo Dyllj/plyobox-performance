@@ -1,0 +1,548 @@
+/* ---------- How it works ---------- */
+.steps-grid,
+.membership-grid,
+.trainer-grid,
+.quote-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.steps-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step-card {
+  padding: 1rem;
+}
+
+.step-visual {
+  position: relative;
+  display: grid;
+  height: 145px;
+  overflow: hidden;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background:
+    linear-gradient(140deg, rgb(var(--lime-rgb) / 7%), transparent 60%),
+    var(--ground);
+}
+
+.step-number {
+  display: block;
+  margin-top: 1rem;
+  color: var(--lime);
+  font-family: var(--display);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.06em;
+  line-height: 1;
+}
+
+.step-card h3 {
+  margin-top: 0.55rem;
+}
+
+.step-card p {
+  margin-top: 0.5rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* Step 1: sign-up mock */
+.mock-form {
+  display: grid;
+  width: 62%;
+  gap: 0.5rem;
+  justify-items: start;
+}
+
+.mock-avatar {
+  width: 30px;
+  height: 30px;
+  border: 2px solid var(--lime);
+  border-radius: 50%;
+}
+
+.mock-bar {
+  width: 100%;
+  height: 10px;
+  border-radius: var(--pill);
+  background: linear-gradient(90deg, #272920 30%, #34372b 50%, #272920 70%) 0 0 / 200% 100%;
+  animation: shimmer 2.4s linear infinite;
+}
+
+.mock-bar-short {
+  width: 64%;
+}
+
+.mock-btn {
+  width: 48%;
+  height: 14px;
+  margin-top: 0.15rem;
+  border-radius: var(--pill);
+  background: var(--lime);
+}
+
+/* Step 2: payment chips */
+.pay-chips {
+  display: grid;
+  width: 70%;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pay-chips li {
+  border: 1px solid #3a3d2e;
+  border-radius: var(--pill);
+  padding: 0.3rem 0.5rem;
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-align: center;
+  transition:
+    border-color 200ms ease,
+    color 200ms ease;
+}
+
+.pay-chips li:first-child {
+  border-color: var(--lime);
+  color: var(--lime);
+}
+
+[data-reveal-ready] .step-card.is-visible .pay-chips li {
+  animation: pop 500ms var(--ease-spring) both;
+}
+
+.pay-chips li:nth-child(1) { animation-delay: 300ms; }
+.pay-chips li:nth-child(2) { animation-delay: 380ms; }
+.pay-chips li:nth-child(3) { animation-delay: 460ms; }
+.pay-chips li:nth-child(4) { animation-delay: 540ms; }
+
+/* Step 3: QR with scan line */
+.qr {
+  position: relative;
+  display: grid;
+  width: 104px;
+  aspect-ratio: 1;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  border-radius: 10px;
+  padding: 10px;
+  background: var(--text);
+}
+
+.qr span {
+  border-radius: 1.5px;
+  background: transparent;
+}
+
+.qr span[data-on] {
+  background: var(--ground);
+}
+
+.qr span[data-data] {
+  animation: twinkle 2.6s ease-in-out infinite;
+  animation-delay: calc(var(--k) * -0.37s);
+}
+
+.qr::after {
+  position: absolute;
+  right: -6px;
+  left: -6px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--lime);
+  box-shadow: 0 0 14px 3px rgb(var(--lime-rgb) / 70%);
+  content: "";
+  animation: scan 2.2s ease-in-out infinite alternate;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .step-card:hover .step-number {
+    animation: float 1.2s ease-in-out infinite;
+  }
+}
+
+/* ---------- Gym mosaic ---------- */
+.gym-mosaic {
+  display: grid;
+  min-height: 570px;
+  grid-template-columns: 1.7fr 0.85fr 0.85fr;
+  grid-template-rows: repeat(3, minmax(130px, 1fr));
+  gap: 0.7rem;
+}
+
+.gym-cell {
+  display: grid;
+  min-width: 0;
+}
+
+.gym-photo {
+  min-height: 0;
+  border-radius: 16px;
+}
+
+.gym-cell-floor { grid-row: 1 / 3; }
+.gym-cell-box { grid-column: 2; grid-row: 1; }
+.gym-cell-kettlebell { grid-column: 2; grid-row: 2; }
+.gym-cell-racks { grid-column: 3; grid-row: 1 / 3; }
+.gym-cell-turf { grid-column: 1; grid-row: 3; }
+.gym-cell-community { grid-column: 2 / 4; grid-row: 3; }
+
+/* ---------- Membership ---------- */
+.membership-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.membership-card {
+  padding: clamp(1.3rem, 3vw, 2rem);
+}
+
+.membership-card h3 {
+  font-size: 1.35rem;
+}
+
+.membership-card > p:not(.price, .price-unit) {
+  min-height: 3.3em;
+  margin-top: 0.55rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* Featured plan: gradient border that slowly rotates. */
+.membership-card-featured {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(140deg, #1d2015, var(--card) 65%) padding-box,
+    conic-gradient(from var(--angle), var(--lime-deep), var(--lime), var(--lime-deep), #2c2e25, var(--lime-deep)) border-box;
+  animation: spin-angle 7s linear infinite;
+}
+
+.membership-title-row {
+  display: flex;
+  min-height: 2rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+}
+
+.popular-tag {
+  flex: 0 0 auto;
+  border-radius: var(--pill);
+  padding: 0.28rem 0.6rem;
+  background: var(--lime);
+  color: #14150f;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.price {
+  margin-top: 1rem;
+  font-family: var(--display);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 700;
+  letter-spacing: -0.055em;
+  line-height: 1.1;
+}
+
+.price-unit {
+  margin-block: 0.25rem 1.1rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+/* ---------- Trainers ---------- */
+.trainer-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.trainer-card {
+  overflow: hidden;
+}
+
+.trainer-photo {
+  height: 220px;
+  min-height: 0;
+  margin: 0.75rem 0.75rem 0;
+  border-radius: 150px 150px 14px 14px;
+}
+
+.trainer-card-body {
+  padding: 1rem;
+}
+
+.trainer-card h3 {
+  font-size: 1.06rem;
+}
+
+.trainer-specialty {
+  margin-top: 0.3rem;
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.trainer-specialty span {
+  padding-inline: 0.2rem;
+}
+
+.trainer-card-footer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.trainer-rate {
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.trainer-details summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 4px;
+  color: var(--lime);
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+  transition: color 160ms ease;
+}
+
+.trainer-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.trainer-details summary svg {
+  width: 1.1em;
+  height: 1.1em;
+  transition: transform 260ms var(--ease-out);
+}
+
+.trainer-details summary:hover {
+  color: var(--text);
+}
+
+.trainer-details summary:hover svg {
+  transform: translateX(3px);
+}
+
+.trainer-details[open] summary svg {
+  transform: rotate(90deg);
+}
+
+.trainer-details p {
+  margin-top: 0.75rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  animation: notice-in 300ms var(--ease-out) both;
+}
+
+.trainer-invite {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  padding: 1.35rem 1.5rem;
+  border-radius: 18px;
+}
+
+.trainer-invite p {
+  margin-top: 0.35rem;
+  color: var(--muted);
+  font-size: 0.87rem;
+}
+
+/* ---------- Community ---------- */
+.quote-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.quote-card {
+  min-height: 185px;
+  padding: 1.25rem;
+  border-radius: 18px;
+}
+
+.quote-mark {
+  position: absolute;
+  top: 1.1rem;
+  right: 1.1rem;
+  width: 34px;
+  height: 34px;
+  color: var(--lime);
+  opacity: 0.16;
+  transition:
+    opacity 300ms ease,
+    rotate 400ms var(--ease-spring);
+}
+
+.quote-card:hover .quote-mark {
+  opacity: 0.5;
+  rotate: -8deg;
+}
+
+.quote-avatar {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid #3a3d2e;
+  border-radius: 50%;
+  color: var(--lime);
+  font-family: var(--display);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.quote-card blockquote {
+  margin: 1rem 0 0.65rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.quote-card figcaption {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+/* ---------- Join banner ---------- */
+.join-banner {
+  display: grid;
+  min-height: 260px;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+  border-radius: 20px;
+  background: var(--lime);
+  color: #14150f;
+}
+
+.join-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(1.5rem, 5vw, 3.5rem);
+}
+
+.join-copy h2 {
+  max-width: 13ch;
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+}
+
+.join-copy p {
+  max-width: 27rem;
+  margin-block: 0.8rem 1.25rem;
+  color: #373c21;
+  font-size: 0.92rem;
+}
+
+.join-photo {
+  height: 100%;
+  min-height: 260px;
+  border-radius: 0;
+}
+
+.join-photo::before {
+  animation: sheen 5s ease-in-out infinite;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 960px) {
+  .gym-mosaic {
+    min-height: 500px;
+  }
+}
+
+@media (max-width: 720px) {
+  .steps-grid,
+  .trainer-grid,
+  .quote-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .step-card:last-child,
+  .trainer-card:last-child,
+  .quote-card:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .step-visual {
+    height: 125px;
+  }
+
+  .gym-mosaic {
+    min-height: 430px;
+    grid-template-rows: repeat(3, minmax(110px, 1fr));
+  }
+
+  .trainer-photo {
+    height: 190px;
+  }
+}
+
+@media (max-width: 520px) {
+  .steps-grid,
+  .membership-grid,
+  .trainer-grid,
+  .quote-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .step-card:last-child,
+  .trainer-card:last-child,
+  .quote-card:last-child {
+    grid-column: auto;
+  }
+
+  .gym-mosaic {
+    min-height: 0;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 200px 130px 130px;
+  }
+
+  .gym-cell-floor { grid-column: 1 / 3; grid-row: 1; }
+  .gym-cell-box { grid-column: 1; grid-row: 2; }
+  .gym-cell-kettlebell { grid-column: 2; grid-row: 2; }
+  .gym-cell-racks { grid-column: 1; grid-row: 3; }
+  .gym-cell-turf { grid-column: 2; grid-row: 3; }
+  .gym-cell-community { display: none; }
+
+  .trainer-photo {
+    height: 235px;
+  }
+
+  .trainer-invite {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .join-banner {
+    grid-template-columns: 1fr;
+  }
+
+  .join-photo {
+    min-height: 150px;
+  }
+}
+
+/* Wrapper carries the scroll-reveal so the card can keep its own animation. */
+.plan {
+  display: grid;
+}
+
+.plan > .membership-card {
+  height: 100%;
+}

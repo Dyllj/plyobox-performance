@@ -1,0 +1,28 @@
+/* Respect users who prefer reduced motion. Must stay last. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .hero-line > span,
+  .hero-line-accent > span::after {
+    transform: none;
+  }
+
+  .scroll-progress {
+    display: none;
+  }
+
+  .card:hover,
+  .button:hover:not(:disabled),
+  .back-to-top:hover {
+    transform: none !important;
+  }
+}

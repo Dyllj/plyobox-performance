@@ -1,0 +1,155 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--ground);
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+  scrollbar-color: #3a3d2e var(--ground);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+  overflow-x: clip;
+  background: var(--ground);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:where(button, a, summary) {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible {
+  outline: 3px solid var(--lime);
+  outline-offset: 4px;
+}
+
+::selection {
+  background: var(--lime);
+  color: var(--ground);
+}
+
+h1,
+h2,
+h3,
+p,
+figure {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--display);
+  letter-spacing: -0.045em;
+  line-height: 1.08;
+}
+
+h1 {
+  font-size: clamp(3.35rem, 7vw, 5.4rem);
+  font-weight: 700;
+}
+
+h2 {
+  max-width: 17ch;
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-weight: 600;
+}
+
+h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+/* Decorative glows may extend past the viewport; never let them scroll. */
+main {
+  overflow-x: clip;
+}
+
+/* Layout primitives */
+.section-wrap {
+  width: min(100% - 3rem, var(--wrap));
+  margin-inline: auto;
+}
+
+.section {
+  padding-block: clamp(4.5rem, 9vw, 7.5rem);
+}
+
+.section-alt {
+  background: var(--ground-raised);
+}
+
+.skip-link {
+  position: fixed;
+  z-index: 40;
+  top: 0.75rem;
+  left: 0.75rem;
+  translate: 0 -160%;
+  border-radius: var(--pill);
+  padding: 0.7rem 1rem;
+  background: var(--lime);
+  color: var(--lime-ink);
+  font-weight: 700;
+}
+
+.skip-link:focus {
+  translate: 0 0;
+}
+
+/* Reading-progress bar driven by scroll (no JS; hidden where unsupported). */
+.scroll-progress {
+  position: fixed;
+  z-index: 30;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--lime-deep), var(--lime));
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+
+@supports (animation-timeline: scroll()) {
+  .scroll-progress {
+    animation: progress-grow linear both;
+    animation-timeline: scroll(root);
+  }
+}
+
+@media (max-width: 720px) {
+  .section-wrap {
+    width: min(100% - 2rem, var(--wrap));
+  }
+}
+
+@media (max-width: 520px) {
+  .section-wrap {
+    width: min(100% - 1.5rem, var(--wrap));
+  }
+
+  .section {
+    padding-block: 4.25rem;
+  }
+}
