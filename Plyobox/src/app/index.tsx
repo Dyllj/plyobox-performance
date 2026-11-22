@@ -1,63 +1,74 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
+import { useState } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { AppIcon } from '@/components/app-icon';
+import { Brand, Button, Field, Page } from '@/components/mobile-ui';
+import { PlyoboxTheme as colors } from '@/constants/plyobox-theme';
+import { MEMBER_HOME_ROUTE } from '@/lib/navigation';
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+export default function LoginScreen() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+    <Page>
+      <View style={styles.container}>
+        <View style={styles.brandWrap}>
+          <Brand inverse />
+          <Text style={styles.tagline}>Train explosive. Move better.</Text>
+        </View>
 
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+        <View style={styles.form}>
+          <View style={styles.heading}>
+            <Text accessibilityRole="header" style={styles.title}>
+              Welcome back
+            </Text>
+            <Text style={styles.subtitle}>Log in to your Plyobox account</Text>
+          </View>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
+          <Field
+            autoCapitalize="none"
+            autoComplete="email"
+            keyboardType="email-address"
+            label="Email"
+            onChangeText={setEmail}
+            placeholder="you@example.com"
+            value={email}
           />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
+          <Field
+            autoComplete="current-password"
+            label="Password"
+            onChangeText={setPassword}
+            placeholder="Enter your password"
+            secureTextEntry
+            value={password}
           />
-        </ThemedView>
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => router.push('/forgot-password')}
+            style={({ pressed }) => [styles.forgotButton, pressed && styles.pressed]}>
+            <Text style={styles.forgotText}>Forgot password?</Text>
+          </Pressable>
+
+          <Button
+            label="Log in"
+            onPress={() => router.replace(MEMBER_HOME_ROUTE)}
+            icon="arrow-right"
+          />
+          <Button
+            label="Create account"
+            onPress={() => router.push('/register')}
+            variant="outline"
+          />
+          <View style={styles.demoNote}>
+            <AppIcon name="info" color={colors.muted} size={15} />
+            <Text style={styles.demoText}>UI preview · Sign-in is not connected yet</Text>
+          </View>
+        </View>
+      </View>
+    </Page>
   );
 }
 
@@ -65,34 +76,56 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    flexDirection: 'row',
+    gap: 42,
+    paddingVertical: 28,
   },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
+  brandWrap: {
     alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+    gap: 15,
   },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+  tagline: {
+    color: colors.muted,
+    fontSize: 13,
+  },
+  form: {
+    gap: 13,
+  },
+  heading: {
+    gap: 4,
+    marginBottom: 8,
   },
   title: {
+    color: colors.text,
+    fontSize: 26,
+    lineHeight: 32,
+    fontWeight: '800',
     textAlign: 'center',
   },
-  code: {
-    textTransform: 'uppercase',
+  subtitle: {
+    color: colors.muted,
+    fontSize: 13,
+    textAlign: 'center',
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+  forgotButton: {
+    alignSelf: 'flex-end',
+    paddingVertical: 6,
+  },
+  forgotText: {
+    color: colors.muted,
+    fontSize: 11,
+  },
+  demoNote: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    marginTop: 2,
+  },
+  demoText: {
+    color: colors.subtle,
+    fontSize: 10,
+  },
+  pressed: {
+    opacity: 0.72,
   },
 });
