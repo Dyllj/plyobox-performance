@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import { membershipPlans } from "../../data/site";
 import { stagger } from "../../lib/stagger";
+import { formatPeso } from "../../lib/shared/contract";
 import SectionHeading from "../site/SectionHeading";
 
 export default function MembershipSection() {
@@ -27,7 +28,7 @@ export default function MembershipSection() {
                 {plan.tag && <span className="popular-tag">{plan.tag}</span>}
               </div>
               <p>{plan.description}</p>
-              <p className="price">{plan.price}</p>
+              <p className="price">{plan.priceMinor === null ? "Price set by the gym" : formatPeso(plan.priceMinor)}</p>
               <p className="price-unit">{plan.unit}</p>
               <a
                 className={`button button-full ${plan.featured ? "button-lime" : "button-outline"}`}

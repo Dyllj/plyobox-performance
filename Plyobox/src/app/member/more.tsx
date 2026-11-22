@@ -3,14 +3,17 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import { Badge, Button, ListRow, Page, Panel, SectionTitle } from '@/components/mobile-ui';
 import { PlyoboxTheme as colors } from '@/constants/plyobox-theme';
+import { useSession } from '@/lib/session';
 import { openFeature } from '@/lib/navigation';
 
 export default function MoreScreen() {
+  const { user, signOut } = useSession();
   return (
     <Page
+      tabbed
       title="More"
       subtitle="Your account, training tools and community."
-      rightAction={<Badge tone="neutral">Mika · Member</Badge>}>
+      rightAction={<Badge tone="neutral">{user.fullName} · Member</Badge>}>
       <View style={styles.menu}>
         <ListRow
           icon="bell"
@@ -31,19 +34,13 @@ export default function MoreScreen() {
           detail="Payment status and receipts"
           onPress={() => openFeature('payments')}
         />
-        <ListRow
-          icon="dumbbell"
-          title="Workouts & progress"
-          detail="Plans, training logs and personal progress"
-          onPress={() => openFeature('workouts')}
-        />
       </View>
 
       <View style={styles.section}>
         <SectionTitle title="Account" />
         <ListRow
           icon="person"
-          title="Profile & settings"
+          title="Profile"
           detail="Personal details, emergency contact and privacy"
           onPress={() => openFeature('profile')}
         />
@@ -51,12 +48,6 @@ export default function MoreScreen() {
           icon="settings"
           title="Settings & privacy"
           onPress={() => openFeature('settings')}
-        />
-        <ListRow
-          icon="share"
-          title="Community"
-          detail="Referrals and fitness challenges"
-          onPress={() => openFeature('community')}
         />
       </View>
 
@@ -74,7 +65,7 @@ export default function MoreScreen() {
         />
       </Panel>
 
-      <Button label="Log out" onPress={() => router.replace('/')} variant="quiet" />
+      <Button label="Log out" onPress={() => { signOut(); router.replace('/'); }} variant="quiet" />
     </Page>
   );
 }

@@ -42,19 +42,26 @@ export default function TrainerDirectorySection() {
                 src="/Coach.jpg"
               />
               <div className="trainer-card-body">
-                <h3>{trainer.name}</h3>
-                <p className="trainer-specialty">
-                  {trainer.specialty} <span>·</span> {trainer.years} yrs
-                </p>
+                {trainer.name && <h3>{trainer.name}</h3>}
+                {(trainer.specialty || trainer.yearsExperience !== null) && (
+                  <p className="trainer-specialty">
+                    {trainer.specialty}
+                    {trainer.specialty && trainer.yearsExperience !== null && <span> · </span>}
+                    {trainer.yearsExperience !== null && `${trainer.yearsExperience} yrs`}
+                  </p>
+                )}
                 <div className="trainer-card-footer">
-                  <span className="trainer-rate">{trainer.rate} / session</span>
+                  <span className="trainer-rate">
+                    {trainer.services.length
+                      ? `From ₱${Math.min(...trainer.services.map((service) => service.priceMinor)) / 100}`
+                      : "Rate set by trainer"}
+                  </span>
                   <details className="trainer-details">
                     <summary>
                       View profile <ArrowRight aria-hidden="true" />
                     </summary>
                     <p>
-                      {trainer.bio} · Contact this trainer to ask about services and
-                      availability.
+                      {trainer.bio ?? "Contact this trainer to ask about services and availability."}
                     </p>
                   </details>
                 </div>

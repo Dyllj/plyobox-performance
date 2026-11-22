@@ -32,11 +32,19 @@ const structuredData = {
   "@type": "SportsActivityLocation",
   name: siteInfo.name,
   description,
+  ...(siteInfo.phone ? { telephone: siteInfo.phone } : {}),
+  ...(siteInfo.hours ? { openingHours: siteInfo.hours } : {}),
+  ...(siteInfo.lat !== null && siteInfo.lng !== null ? { geo: {
+    "@type": "GeoCoordinates",
+    latitude: siteInfo.lat,
+    longitude: siteInfo.lng,
+  } } : {}),
   address: {
     "@type": "PostalAddress",
-    addressLocality: "Mahayag",
-    addressRegion: "Zamboanga del Sur",
-    addressCountry: "PH",
+    ...(siteInfo.address ? { streetAddress: siteInfo.address } : {}),
+    ...(siteInfo.locality ? { addressLocality: siteInfo.locality } : {}),
+    ...(siteInfo.region ? { addressRegion: siteInfo.region } : {}),
+    ...(siteInfo.country ? { addressCountry: siteInfo.country } : {}),
   },
 };
 

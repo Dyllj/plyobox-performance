@@ -1,5 +1,7 @@
 import { LogOut, X } from "lucide-react";
 import { navigation, type Role, type SectionId } from "../data";
+import { PERMISSIONS, STAFF_ROLE_LABEL } from "../shared/contract";
+import { createSeed, gymInfo as seededGymInfo } from "../shared/seed";
 
 type SidebarProps = {
   activeSection: SectionId;
@@ -18,7 +20,9 @@ export default function Sidebar({
   onClose,
   onSignOut,
 }: SidebarProps) {
-  const visibleNavigation = navigation.filter((item) => role === "Owner" || !item.ownerOnly);
+  const visibleNavigation = navigation.filter((item) => PERMISSIONS[item.permission][role] !== "none");
+  const seed = createSeed(new Date());
+  const currentUser = seed.staff.find((user) => user.role === role) ?? seed.staff[0];
 
   return (
     <>
@@ -64,7 +68,7 @@ export default function Sidebar({
               >
                 <Icon aria-hidden="true" size={18} strokeWidth={1.8} />
                 <span>{item.label}</span>
-                {item.ownerOnly && <span className="owner-tag">OWNER</span>}
+                {PERMISSIONS[item.permission][role] === "full" && item.permission === "pricing" && <span className="owner-tag">OWNER</span>}
                 {item.id === "payments" && <span className="nav-count">3</span>}
                 {item.id === "inquiries" && <span className="nav-count nav-count-muted">2</span>}
               </button>
@@ -75,13 +79,13 @@ export default function Sidebar({
         <div className="sidebar-bottom">
           <div className="sidebar-gym">
             <span className="gym-status-dot" />
-            <span>PLYBOX PERFORMANCE</span>
+            <span>{seededGymInfo.name}</span>
           </div>
           <div className="staff-card">
             <div aria-hidden="true" className="avatar avatar-small">AV</div>
             <div className="staff-meta">
-              <strong>Alex Villanueva</strong>
-              <span>{role} · Mahayag</span>
+              <strong>{currentUser.name}</strong>
+                <span>{STAFF_ROLE_LABEL[role]} · {seededGymInfo.locality}</span>
             </div>
             <button aria-label="Sign out" className="icon-button signout-button" onClick={onSignOut} type="button">
               <LogOut size={17} />

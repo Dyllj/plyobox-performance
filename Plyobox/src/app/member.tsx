@@ -5,14 +5,17 @@ import { AppIcon } from '@/components/app-icon';
 import { Badge, Button, IconButton, Page, Panel, ProgressBar, SectionTitle } from '@/components/mobile-ui';
 import { PlyoboxTheme as colors } from '@/constants/plyobox-theme';
 import { openFeature } from '@/lib/navigation';
+import { useSession } from '@/lib/session';
 
 export default function MemberHomeScreen() {
+  const { user } = useSession();
   return (
     <Page
+      tabbed
       header={
         <View style={styles.topBar}>
           <View>
-            <Text style={styles.greeting}>Hi, Mika</Text>
+            <Text style={styles.greeting}>Hi, {user.fullName.split(' ')[0]}</Text>
             <Text style={styles.welcome}>Ready for your next training session?</Text>
           </View>
           <View style={styles.topActions}>
@@ -40,7 +43,7 @@ export default function MemberHomeScreen() {
         <Text style={styles.expires}>Expires 12 Dec · 18 days left</Text>
         <View style={styles.memberIdRow}>
           <Text style={styles.memberIdLabel}>MEMBER ID</Text>
-          <Text style={styles.memberId}>PLY-0001</Text>
+          <Text style={styles.memberId}>PLY-0042</Text>
         </View>
         <View style={styles.actionRow}>
           <Button
@@ -86,11 +89,6 @@ export default function MemberHomeScreen() {
       <View style={styles.quickLinks}>
         <SectionTitle title="Keep moving" />
         <View style={styles.quickGrid}>
-          <QuickLink
-            icon="dumbbell"
-            label="Workouts"
-            onPress={() => openFeature('workouts')}
-          />
           <QuickLink
             icon="person"
             label="Trainers"

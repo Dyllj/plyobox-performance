@@ -7,6 +7,7 @@ import { openFeature } from '@/lib/navigation';
 export default function MembershipScreen() {
   return (
     <Page
+      tabbed
       title="Membership"
       subtitle="Your gym access and payment history."
       rightAction={<Badge tone="neutral">PREVIEW</Badge>}>
@@ -26,7 +27,7 @@ export default function MembershipScreen() {
         </View>
         <Button
           label="Renew membership"
-          onPress={() => openFeature('checkout')}
+          onPress={() => openFeature('checkout', { type: 'monthly' })}
         />
       </Panel>
 
@@ -42,7 +43,7 @@ export default function MembershipScreen() {
           </View>
           <Button
             label="Buy day pass"
-            onPress={() => openFeature('checkout', { plan: 'Daily Session' })}
+            onPress={() => openFeature('checkout', { type: 'daily' })}
             variant="outline"
           />
         </Panel>
@@ -56,7 +57,7 @@ export default function MembershipScreen() {
           </View>
           <Button
             label="Choose monthly"
-            onPress={() => openFeature('checkout', { plan: 'Monthly Membership' })}
+            onPress={() => openFeature('checkout', { type: 'monthly' })}
             variant="quiet"
           />
         </Panel>

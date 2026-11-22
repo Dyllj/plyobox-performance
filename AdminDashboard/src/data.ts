@@ -15,6 +15,7 @@ import {
   UserRoundCog,
   type LucideIcon,
 } from "lucide-react";
+import type { Permission, StaffRole } from "./shared/contract";
 
 export type SectionId =
   | "overview"
@@ -32,30 +33,30 @@ export type SectionId =
   | "audit-log"
   | "settings";
 
-export type Role = "Owner" | "Staff";
+export type Role = StaffRole;
 
 export type NavigationItem = {
   id: SectionId;
   label: string;
   icon: LucideIcon;
-  ownerOnly?: boolean;
+  permission: Permission;
 };
 
 export const navigation: NavigationItem[] = [
-  { id: "overview", label: "Overview", icon: LayoutDashboard },
-  { id: "members", label: "Members", icon: Users },
-  { id: "pricing", label: "Pricing", icon: BadgeDollarSign, ownerOnly: true },
-  { id: "payments", label: "Payments", icon: CreditCard },
-  { id: "gym-qr", label: "Gym QR", icon: QrCode },
-  { id: "attendance", label: "Attendance", icon: ClipboardCheck },
-  { id: "trainers", label: "Trainers", icon: Dumbbell },
-  { id: "bookings", label: "Bookings", icon: CalendarDays },
-  { id: "reports", label: "Reports", icon: BarChart3, ownerOnly: true },
-  { id: "expenses", label: "Expenses", icon: ReceiptText, ownerOnly: true },
-  { id: "inquiries", label: "Inquiries", icon: MessageSquareText },
-  { id: "users", label: "Users & roles", icon: UserRoundCog, ownerOnly: true },
-  { id: "audit-log", label: "Audit log", icon: FileClock },
-  { id: "settings", label: "Settings", icon: Settings, ownerOnly: true },
+  { id: "overview", label: "Overview", icon: LayoutDashboard, permission: "reports" },
+  { id: "members", label: "Members", icon: Users, permission: "members" },
+  { id: "pricing", label: "Pricing", icon: BadgeDollarSign, permission: "pricing" },
+  { id: "payments", label: "Payments", icon: CreditCard, permission: "payments" },
+  { id: "gym-qr", label: "Gym QR", icon: QrCode, permission: "attendance" },
+  { id: "attendance", label: "Attendance", icon: ClipboardCheck, permission: "attendance" },
+  { id: "trainers", label: "Trainers", icon: Dumbbell, permission: "trainers" },
+  { id: "bookings", label: "Bookings", icon: CalendarDays, permission: "trainers" },
+  { id: "reports", label: "Reports", icon: BarChart3, permission: "reports" },
+  { id: "expenses", label: "Expenses", icon: ReceiptText, permission: "expenses" },
+  { id: "inquiries", label: "Inquiries", icon: MessageSquareText, permission: "inquiries" },
+  { id: "users", label: "Staff & roles", icon: UserRoundCog, permission: "users" },
+  { id: "audit-log", label: "Audit log", icon: FileClock, permission: "auditLog" },
+  { id: "settings", label: "Settings", icon: Settings, permission: "settings" },
 ];
 
 export const weeklyRevenue = [

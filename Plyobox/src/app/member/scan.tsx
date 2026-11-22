@@ -7,7 +7,7 @@ import { openFeature } from '@/lib/navigation';
 
 export default function ScanScreen() {
   return (
-    <Page title="Check in" subtitle="Scan the current QR code at the gym entrance.">
+    <Page tabbed title="Check in" subtitle="Scan the current QR code at the gym entrance.">
       <View style={styles.scanFrame}>
         <View style={[styles.corner, styles.cornerTopLeft]} />
         <View style={[styles.corner, styles.cornerTopRight]} />
@@ -41,7 +41,7 @@ export default function ScanScreen() {
 
       <Button
         label="Preview successful check-in"
-        onPress={() => openFeature('check-in-result')}
+        onPress={() => openFeature('check-in-result', { memberId: 'MEM-0042' })}
       />
     </Page>
   );

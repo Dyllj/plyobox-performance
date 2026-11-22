@@ -2,6 +2,7 @@ import { Bell, ChevronDown, Menu, Search } from "lucide-react";
 import { useState } from "react";
 import type { RefObject } from "react";
 import { pendingPayments, type Role, type SectionId } from "../data";
+import { STAFF_ROLE_LABEL } from "../shared/contract";
 
 type TopbarProps = {
   title: string;
@@ -106,13 +107,13 @@ export default function Topbar({
             onClick={() => setRoleMenuOpen((open) => !open)}
             type="button"
           >
-            <span className={`role-dot ${role === "Owner" ? "role-owner" : "role-staff"}`} />
-            <span>{role}</span>
+            <span className={`role-dot ${role === "owner" ? "role-owner" : "role-staff"}`} />
+            <span>{STAFF_ROLE_LABEL[role]}</span>
             <ChevronDown aria-hidden="true" size={14} />
           </button>
           {roleMenuOpen && (
             <div className="role-menu">
-              {(["Owner", "Staff"] as const).map((nextRole) => (
+              {(["owner", "admin", "staff"] as const).map((nextRole) => (
                 <button
                   aria-pressed={role === nextRole}
                   key={nextRole}
@@ -122,7 +123,7 @@ export default function Topbar({
                   }}
                   type="button"
                 >
-                  {nextRole}
+                  {STAFF_ROLE_LABEL[nextRole]}
                   {role === nextRole && <span aria-hidden="true">✓</span>}
                 </button>
               ))}

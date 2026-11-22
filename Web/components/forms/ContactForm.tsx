@@ -1,7 +1,8 @@
 "use client";
 
 import { Info, Send } from "lucide-react";
-import { Fragment, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
+import { INQUIRY_TOPIC_LABEL, INQUIRY_TOPICS, type InquiryInput, type InquiryTopic } from "../../lib/shared/contract";
 
 const PREVIEW_NOTICE =
   "This inquiry form is a preview and is not connected yet. Your message was not sent.";
@@ -13,20 +14,44 @@ const fields = [
 
 export default function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const name = String(form.get("name") ?? "").trim();
+    const email = String(form.get("email") ?? "").trim();
+    const phone = String(form.get("phone") ?? "").trim() || null;
+    const topic = String(form.get("topic") ?? "") as InquiryTopic;
+    const message = String(form.get("message") ?? "").trim();
+    if (!name || !email.includes("@") || !message || !INQUIRY_TOPICS.includes(topic)) {
+      setError("Complete the required fields with a valid email.");
+      return;
+    }
+    const inquiry: InquiryInput = { name, email, phone, topic, message };
+    void inquiry;
+    setError("");
     setSubmitted(true);
   }
 
   return (
     <form className="contact-form" onSubmit={handleSubmit}>
       {fields.map(({ id, label, ...input }) => (
-        <Fragment key={id}>
+        <div key={id}>
           <label htmlFor={`contact-${id}`}>{label}</label>
           <input id={`contact-${id}`} name={id} required {...input} />
-        </Fragment>
+        </div>
       ))}
+
+      <label htmlFor="contact-phone">Phone (optional)</label>
+      <input id="contact-phone" name="phone" autoComplete="tel" type="tel" />
+
+      <label htmlFor="contact-topic">Topic</label>
+      <select id="contact-topic" name="topic" required>
+        {INQUIRY_TOPICS.map((topic) => (
+          <option key={topic} value={topic}>{INQUIRY_TOPIC_LABEL[topic]}</option>
+        ))}
+      </select>
 
       <label htmlFor="contact-message">Message</label>
       <textarea
@@ -49,6 +74,7 @@ export default function ContactForm() {
           </>
         )}
       </p>
+      {error && <p aria-live="polite" role="alert">{error}</p>}
     </form>
   );
 }

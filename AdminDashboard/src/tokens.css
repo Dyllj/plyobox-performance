@@ -1,0 +1,25 @@
+/* GENERATED from /shared/tokens.json by shared/sync.mjs. */
+:root {
+  --ground: #0d0e0b;
+  --ground-raised: #12130f;
+  --ground-deep: #090a08;
+  --card: #1b1c15;
+  --card-soft: #202119;
+  --line: #2c2e25;
+  --line-strong: #555a40;
+  --text: #f2f3ec;
+  --muted: #a9aca0;
+  --subtle: #777a70;
+  --lime: #c6f135;
+  --lime-ink: #10110b;
+  --lime-deep: #667a27;
+  --lime-rgb: 198 241 53;
+  --amber: #e6b866;
+  --danger: #e48978;
+  --info: #82aef4;
+  --violet: #c1a0f4;
+  --success: #c6f135;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 19px;
+}

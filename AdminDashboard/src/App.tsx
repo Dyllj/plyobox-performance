@@ -6,14 +6,16 @@ import Sidebar from "./components/Sidebar";
 import SignIn from "./components/SignIn";
 import Topbar from "./components/Topbar";
 import { navigation, type Role, type SectionId } from "./data";
+import { PERMISSIONS, STAFF_ROLE_LABEL } from "./shared/contract";
+import { createSeed, gymInfo } from "./shared/seed";
 
 export default function App() {
   const [activeSection, setActiveSection] = useState<SectionId>("overview");
-  const [role, setRole] = useState<Role>("Owner");
+  const [role, setRole] = useState<Role>("owner");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [toast, setToast] = useState("");
-  const [signedIn, setSignedIn] = useState(true);
+  const [signedIn, setSignedIn] = useState(import.meta.env.VITE_PREVIEW_SKIP_LOGIN === "true");
   const searchRef = useRef<HTMLInputElement>(null);
   const toastTimer = useRef<number | null>(null);
 
@@ -45,8 +47,8 @@ export default function App() {
 
   const navigate = (section: SectionId) => {
     const target = navigation.find((item) => item.id === section);
-    if (target?.ownerOnly && role === "Staff") {
-      notify("This section is available to the owner role only.");
+    if (!target || PERMISSIONS[target.permission][role] === "none") {
+      notify("Your role does not have access to this section.");
       return;
     }
 
@@ -58,6 +60,14 @@ export default function App() {
 
   if (!signedIn) return <SignIn onSignIn={() => setSignedIn(true)} />;
 
+  const seed = createSeed(new Date());
+  const currentUser = seed.staff.find((user) => user.role === role) ?? seed.staff[0];
+  const manilaHour = Number(new Intl.DateTimeFormat("en-US", {
+    hour: "numeric",
+    hour12: false,
+    timeZone: "Asia/Manila",
+  }).format(new Date()));
+  const greeting = manilaHour < 12 ? "Good morning" : manilaHour < 18 ? "Good afternoon" : "Good evening";
   const today = new Intl.DateTimeFormat("en-PH", {
     weekday: "long",
     month: "long",
@@ -83,7 +93,7 @@ export default function App() {
           onNavigate={navigate}
           onRoleChange={(nextRole) => {
             setRole(nextRole);
-            if (nextRole === "Staff" && activeNavigationItem?.ownerOnly) setActiveSection("overview");
+            if (activeNavigationItem && PERMISSIONS[activeNavigationItem.permission][nextRole] === "none") setActiveSection("overview");
             notify(`Previewing ${nextRole.toLowerCase()} permissions.`);
           }}
           onSearchChange={(value) => {
@@ -100,8 +110,8 @@ export default function App() {
         <main className="dashboard-content" id="main">
           <div className="welcome-row">
             <div>
-              <p className="welcome-date">{today} <span>·</span> Mahayag, Zamboanga del Sur</p>
-              <h1>{activeSection === "overview" ? "Good morning, Alex" : title}<span className="heading-period">.</span></h1>
+              <p className="welcome-date">{today} <span>·</span> {gymInfo.locality}, {gymInfo.region}</p>
+                  <h1>{activeSection === "overview" ? `${greeting}, ${currentUser.name.split(" ")[0]}` : title}<span className="heading-period">.</span></h1>
               <p className="welcome-subtitle">
                 {activeSection === "overview"
                   ? "Here’s what’s happening at your gym today."
@@ -118,8 +128,8 @@ export default function App() {
           )}
 
           <footer className="dashboard-footer">
-            <span>PLY OBOX PERFORMANCE <i>·</i> MAHAYAG</span>
-            <span>Admin workspace <i>·</i> {role} access</span>
+            <span>{gymInfo.name} <i>·</i> {gymInfo.locality?.toUpperCase()}</span>
+            <span>Admin workspace <i>·</i> {STAFF_ROLE_LABEL[role]} access</span>
           </footer>
         </main>
       </div>

@@ -28,6 +28,7 @@ export default function TrainersScreen() {
 
   return (
     <Page
+      tabbed
       title="Trainers"
       subtitle="Find the right coach for your next goal."
       rightAction={<Badge tone="neutral">SAMPLE LIST</Badge>}>
@@ -66,7 +67,7 @@ export default function TrainersScreen() {
             key={trainer.id}
             accessibilityRole="button"
             accessibilityLabel={`View ${trainer.name}'s trainer profile`}
-            onPress={() => openFeature('trainer-profile')}
+            onPress={() => openFeature('trainer-profile', { trainerId: trainer.id })}
             style={({ pressed }) => [styles.trainerCard, pressed && styles.pressed]}>
             <View style={[styles.avatar, index === 1 && styles.avatarAlt, index === 2 && styles.avatarThird]}>
               <AppIcon name="person" color={index === 1 ? '#D8C18B' : colors.accent} size={24} />

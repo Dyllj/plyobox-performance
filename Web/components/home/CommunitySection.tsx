@@ -24,8 +24,8 @@ export default function CommunitySection() {
             <div aria-hidden="true" className="quote-avatar">
               P
             </div>
-            <blockquote>{item.quote}</blockquote>
-            <figcaption>{item.name}</figcaption>
+            {item.quote && <blockquote>{item.quote}</blockquote>}
+            {item.name && <figcaption>{item.name}</figcaption>}
           </figure>
         ))}
       </div>

@@ -38,7 +38,7 @@ export default function HeroSection() {
         </div>
         <p className="hero-location rise" style={stagger(5)}>
           <MapPin aria-hidden="true" />
-          {siteInfo.location}, {siteInfo.country}
+          {[siteInfo.locality, siteInfo.region].filter(Boolean).join(", ")}
         </p>
       </div>
 

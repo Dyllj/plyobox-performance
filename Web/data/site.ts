@@ -1,22 +1,29 @@
-/**
- * All editable copy and content for the public site lives here.
- * Replace every [PLACEHOLDER] with real content; components need no changes.
- */
+import {
+  MEMBERSHIP_LABEL,
+  MEMBERSHIP_UNIT,
+  PAYMENT_METHOD_LABEL,
+  type GymInfo,
+  type MembershipType,
+  type PaymentMethod,
+} from "../lib/shared/contract";
 
-export const siteInfo = {
+export const siteInfo: GymInfo = {
   name: "Plyobox Performance Gym",
-  location: "Mahayag, Zamboanga del Sur",
-  country: "Philippines",
-  contact: {
-    phone: "[PHONE]",
-    email: "[EMAIL]",
-    hours: "[OPENING HOURS]",
-  },
-  /**
-   * Approximate town-centre pin (OpenStreetMap embed, no API key needed).
-   * Replace with the gym's exact coordinates: OSM → Share → HTML embed.
-   */
-  map: { lat: 8.148, lng: 123.434, span: 0.02 },
+  locality: "Mahayag",
+  region: "Zamboanga del Sur",
+  country: "PH",
+  phone: null,
+  email: null,
+  hours: null,
+  address: null,
+  lat: 8.148,
+  lng: 123.434,
+};
+
+export const appLinks = {
+  register: null,
+  ios: null,
+  android: null,
 };
 
 export const publicNavigation = [
@@ -72,7 +79,15 @@ export const steps = [
   },
 ] as const;
 
-export const paymentMethods = ["Cash", "GCash", "Maya", "Bank"] as const;
+export const paymentMethods: readonly PaymentMethod[] = [
+  "cash",
+  "gcash",
+  "maya",
+  "bank",
+] as const;
+export const paymentMethodLabels = paymentMethods.map(
+  (method) => PAYMENT_METHOD_LABEL[method],
+);
 
 export const gymPhotos = [
   {
@@ -113,13 +128,23 @@ export const gymPhotos = [
   },
 ] as const;
 
-export const membershipPlans = [
+export const membershipPlans: readonly {
+  id: MembershipType;
+  name: string;
+  description: string;
+  priceMinor: number | null;
+  unit: string;
+  cta: string;
+  href: string;
+  featured: boolean;
+  tag: string | null;
+}[] = [
   {
     id: "daily",
-    name: "Daily Session",
-    description: "One gym entry for one day. Access ends at midnight.",
-    price: "[YOUR PRICE]",
-    unit: "per session",
+    name: MEMBERSHIP_LABEL.daily,
+    description: "One gym entry for one day. Access ends at midnight on the day of verification.",
+    priceMinor: null,
+    unit: MEMBERSHIP_UNIT.daily,
     cta: "Get a day pass",
     href: "#contact",
     featured: false,
@@ -127,10 +152,10 @@ export const membershipPlans = [
   },
   {
     id: "monthly",
-    name: "Monthly Membership",
-    description: "Valid for 30 days from the day your payment is verified.",
-    price: "[YOUR PRICE]",
-    unit: "per 30 days",
+    name: MEMBERSHIP_LABEL.monthly,
+    description: "Valid for 30 calendar days from the day your payment is verified.",
+    priceMinor: null,
+    unit: MEMBERSHIP_UNIT.monthly,
     cta: "Become a member",
     href: "#contact",
     featured: true,
@@ -139,15 +164,15 @@ export const membershipPlans = [
 ] as const;
 
 export const trainers = [
-  { id: "trainer-one", name: "[TRAINER NAME]", specialty: "[SPECIALIZATION]", years: "[YEARS]", rate: "[RATE]", bio: "[TRAINER BIO]" },
-  { id: "trainer-two", name: "[TRAINER NAME]", specialty: "[SPECIALIZATION]", years: "[YEARS]", rate: "[RATE]", bio: "[TRAINER BIO]" },
-  { id: "trainer-three", name: "[TRAINER NAME]", specialty: "[SPECIALIZATION]", years: "[YEARS]", rate: "[RATE]", bio: "[TRAINER BIO]" },
+  { id: "trainer-one", name: null, specialty: null, yearsExperience: null, services: [] as { id: string; name: string; durationMinutes: number; priceMinor: number }[], bio: null },
+  { id: "trainer-two", name: null, specialty: null, yearsExperience: null, services: [] as { id: string; name: string; durationMinutes: number; priceMinor: number }[], bio: null },
+  { id: "trainer-three", name: null, specialty: null, yearsExperience: null, services: [] as { id: string; name: string; durationMinutes: number; priceMinor: number }[], bio: null },
 ] as const;
 
 export const communityQuotes = [
-  { id: "member-one", quote: "[MEMBER QUOTE]", name: "[MEMBER NAME]" },
-  { id: "member-two", quote: "[MEMBER QUOTE]", name: "[MEMBER NAME]" },
-  { id: "member-three", quote: "[MEMBER QUOTE]", name: "[MEMBER NAME]" },
+  { id: "member-one", quote: null, name: null },
+  { id: "member-two", quote: null, name: null },
+  { id: "member-three", quote: null, name: null },
 ] as const;
 
 export const frequentlyAskedQuestions = [

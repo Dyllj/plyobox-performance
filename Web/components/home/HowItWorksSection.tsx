@@ -1,4 +1,4 @@
-import { paymentMethods, steps } from "../../data/site";
+import { paymentMethodLabels, steps } from "../../data/site";
 import { stagger } from "../../lib/stagger";
 import Marquee from "../site/Marquee";
 import SectionHeading from "../site/SectionHeading";
@@ -43,7 +43,7 @@ function StepVisual({ type }: { type: (typeof steps)[number]["visual"] }) {
     case "payment":
       return (
         <ul aria-label="Payment options" className="pay-chips">
-          {paymentMethods.map((method) => (
+          {paymentMethodLabels.map((method) => (
             <li key={method}>{method}</li>
           ))}
         </ul>

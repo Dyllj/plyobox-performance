@@ -11,8 +11,8 @@ async function CopyrightYear() {
 }
 
 const legalNotices = [
-  { id: "privacy", title: "Privacy notice", body: "[PRIVACY NOTICE]" },
-  { id: "terms", title: "Terms", body: "[TERMS OF USE]" },
+  { id: "privacy", title: "Privacy notice", body: "[PRIVACY NOTICE TEXT: to be supplied by the gym]" },
+  { id: "terms", title: "Terms", body: "[TERMS OF USE: to be supplied by the gym]" },
 ] as const;
 
 export default function SiteFooter() {
@@ -24,7 +24,7 @@ export default function SiteFooter() {
           <span>PLYOBOX</span>
         </a>
         <p className="copyright">
-          © <CopyrightYear /> {siteInfo.name} · {siteInfo.location}
+          © <CopyrightYear /> {siteInfo.name} · {[siteInfo.locality, siteInfo.region].filter(Boolean).join(", ")}
         </p>
         <div className="footer-end">
           <div className="legal-links">

@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { ArrowRight, ShieldCheck } from "lucide-react";
+import { createSeed } from "../shared/seed";
 
 type SignInProps = { onSignIn: () => void };
 
 export default function SignIn({ onSignIn }: SignInProps) {
-  const [email, setEmail] = useState("owner@plyobox.ph");
+  const seed = createSeed(new Date());
+  const owner = seed.staff.find((staff) => staff.role === "owner")!;
+  const [email, setEmail] = useState(owner.email);
   const [password, setPassword] = useState("");
 
   return (
@@ -18,6 +21,7 @@ export default function SignIn({ onSignIn }: SignInProps) {
         <p className="signin-description">Sign in to manage your gym workspace.</p>
         <form className="stacked-form" onSubmit={(event) => {
           event.preventDefault();
+          if (!password.trim()) return;
           onSignIn();
         }}>
           <label className="field-label">Work email<input autoComplete="username" onChange={(event) => setEmail(event.target.value)} required type="email" value={email} /></label>

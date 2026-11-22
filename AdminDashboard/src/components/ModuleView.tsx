@@ -28,6 +28,8 @@ import {
   weeklyRevenue,
   type SectionId,
 } from "../data";
+import { STAFF_ROLE_LABEL, QR_ROTATION_SECONDS } from "../shared/contract";
+import { createSeed } from "../shared/seed";
 
 type ModuleViewProps = {
   section: Exclude<SectionId, "overview">;
@@ -419,8 +421,8 @@ function GymQrView({ onToast }: { onToast: (message: string) => void }) {
           <div aria-label="Illustrative QR code preview. Not valid for scanning." className="qr-code-art" role="img">
             {qrCells.map((isDark, index) => <span className={isDark ? "qr-dark" : ""} key={index} />)}
           </div>
-          <p className="qr-caption">PLY OBOX <span>·</span> MAHAYAG</p>
-          <p className="qr-note">Rotates every 60 seconds · Asia/Manila</p>
+          <p className="qr-caption">Plyobox <span>·</span> Mahayag</p>
+          <p className="qr-note">Rotates every {QR_ROTATION_SECONDS} seconds · Asia/Manila</p>
           <div className="qr-actions">
             <button className="button button-primary" onClick={() => onToast("Display mode is a prototype action.")} type="button"><QrCode size={16} /> Show on display</button>
             <button className="button button-secondary" onClick={() => onToast("QR code refresh is managed by the backend.")} type="button"><RotateCw size={15} /> Rotate now</button>
@@ -623,20 +625,23 @@ function InquiriesView({ onToast }: { onToast: (message: string) => void }) {
 
 function UsersView({ onToast }: { onToast: (message: string) => void }) {
   const [filter, setFilter] = useState("All");
-  const users = [
-    { name: "Alex Villanueva", email: "alex@example.com", role: "Owner", status: "Active" },
-    { name: "Jamie Flores", email: "jamie@example.com", role: "Admin", status: "Active" },
-    { name: "Casey Ramos", email: "casey@example.com", role: "Staff", status: "Active" },
-    { name: "Taylor Cruz", email: "taylor@example.com", role: "Staff", status: "Suspended" },
-  ];
+  const users = createSeed(new Date()).staff;
+  const roleLabels = ["Owner", "Admin", "Staff"] as const;
   return (
     <>
-      <PageIntro eyebrow="ACCESS CONTROL" title="Users & roles" description="Manage staff access with clear, role-based permissions." action="Add staff" onAction={() => onToast("Staff invitation is a prototype action; authentication is not connected.")} />
-      <article className="panel table-panel"><div className="table-toolbar"><div className="filter-pills" role="group" aria-label="Filter dashboard users">{["All", "Owner", "Admin", "Staff"].map((item) => <button aria-pressed={filter === item} className={`filter-pill${filter === item ? " is-active" : ""}`} key={item} onClick={() => setFilter(item)} type="button">{item}{item === "All" && <span>4</span>}</button>)}</div><span className="table-result-count">{filter === "All" ? users.length : users.filter((user) => user.role === filter).length} accounts</span></div>
-        <div className="table-scroll"><table><thead><tr><th>USER</th><th>ROLE</th><th>STATUS</th><th /></tr></thead><tbody>{users.filter((user) => filter === "All" || user.role === filter).map((user) => <tr key={user.email}><td><span className="user-cell"><span className="person-initial">{user.name.split(" ").map((part) => part[0]).join("")}</span><span className="compact-main"><strong>{user.name}</strong><small>{user.email}</small></span></span></td><td><span className={`role-badge${user.role === "Owner" ? " owner-role" : ""}`}>{user.role}</span></td><td><StatusPill value={user.status} /></td><td><button className="row-action" onClick={() => onToast(`Editing ${user.name} is a prototype action.`)} type="button">Edit <Ellipsis size={15} /></button></td></tr>)}</tbody></table></div>
+      <PageIntro eyebrow="ACCESS CONTROL" title="Staff & roles" description="Manage staff access with clear, role-based permissions." action="Add staff" onAction={() => onToast("Staff invitation is a prototype action; authentication is not connected.")} />
+      <article className="panel table-panel"><div className="table-toolbar"><div className="filter-pills" role="group" aria-label="Filter dashboard users">{["All", ...roleLabels].map((item) => <button aria-pressed={filter === item} className={`filter-pill${filter === item ? " is-active" : ""}`} key={item} onClick={() => setFilter(item)} type="button">{item}{item === "All" && <span>{users.length}</span>}</button>)}</div><span className="table-result-count">{users.length} accounts</span></div>
+        <div className="table-scroll"><table><thead><tr><th>USER</th><th>ROLE</th><th>STATUS</th><th /></tr></thead><tbody>{users.filter((user) => filter === "All" || STAFF_ROLE_LABEL[user.role] === filter).map((user) => <tr key={user.id}><td><span className="user-cell"><span className="person-initial">{user.name.split(" ").map((part) => part[0]).join("")}</span><span className="compact-main"><strong>{user.name}</strong><small>{user.email}</small></span></span></td><td><span className={`role-badge${user.role === "owner" ? " owner-role" : ""}`}>{STAFF_ROLE_LABEL[user.role]}</span></td><td><StatusPill value={user.accountStatus} /></td><td><button className="row-action" onClick={() => onToast(`Editing ${user.name} is a prototype action.`)} type="button">Edit <Ellipsis size={15} /></button></td></tr>)}</tbody></table></div>
       </article>
       <article className="panel permission-panel"><div className="panel-heading"><div><p className="eyebrow">ROLE MATRIX</p><h3>Permissions at a glance</h3></div><button className="text-action" onClick={() => onToast("Permission editing is a prototype action.")} type="button">Edit roles <ArrowRight size={14} /></button></div>
-        <SimpleTable columns={["PERMISSION", "OWNER", "ADMIN", "STAFF"]} rows={[["Pricing & settings", "✓", "—", "—"], ["Financial reports", "✓", "—", "—"], ["Members & trainers", "✓", "✓", "View"], ["Verify payments", "✓", "✓", "✓"], ["Manual check-in", "✓", "✓", "✓"]]} />
+        <SimpleTable columns={["PERMISSION", "OWNER", "ADMIN", "STAFF"]} rows={[
+          ["Pricing & settings", "✓", "—", "—"],
+          ["Financial reports", "✓", "—", "—"],
+          ["Members & trainers", "✓", "✓", "View"],
+          ["Verify payments", "✓", "✓", "✓"],
+          ["Manual check-in", "✓", "✓", "✓"],
+          ["Audit log", "✓", "✓", "—"],
+        ]} />
       </article>
     </>
   );

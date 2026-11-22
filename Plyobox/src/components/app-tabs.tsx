@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   },
   label: {
     color: colors.muted,
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: '700',
   },
   labelSelected: {

@@ -6,8 +6,10 @@ import { AppIcon } from '@/components/app-icon';
 import { Brand, Button, Field, Page } from '@/components/mobile-ui';
 import { PlyoboxTheme as colors } from '@/constants/plyobox-theme';
 import { MEMBER_HOME_ROUTE } from '@/lib/navigation';
+import { useSession } from '@/lib/session';
 
 export default function LoginScreen() {
+  const { signIn } = useSession();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -54,7 +56,10 @@ export default function LoginScreen() {
 
           <Button
             label="Log in"
-            onPress={() => router.replace(MEMBER_HOME_ROUTE)}
+            onPress={() => {
+              signIn();
+              router.replace(MEMBER_HOME_ROUTE);
+            }}
             icon="arrow-right"
           />
           <Button

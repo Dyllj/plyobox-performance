@@ -4,16 +4,20 @@ import { stagger } from "../../lib/stagger";
 import ContactForm from "../forms/ContactForm";
 import SectionHeading from "../site/SectionHeading";
 
-const { lat, lng, span } = siteInfo.map;
+const lat = siteInfo.lat;
+const lng = siteInfo.lng;
+const span = 0.02;
 const mapSrc =
-  `https://www.openstreetmap.org/export/embed.html?bbox=${lng - span},${lat - span},${lng + span},${lat + span}` +
-  `&layer=mapnik&marker=${lat},${lng}`;
+  lat !== null && lng !== null
+    ? `https://www.openstreetmap.org/export/embed.html?bbox=${lng - span},${lat - span},${lng + span},${lat + span}` +
+      `&layer=mapnik&marker=${lat},${lng}`
+    : null;
 
 const contactDetails = [
-  { id: "address", Icon: MapPin, text: siteInfo.location },
-  { id: "phone", Icon: Phone, text: siteInfo.contact.phone },
-  { id: "email", Icon: Mail, text: siteInfo.contact.email },
-  { id: "hours", Icon: Clock, text: siteInfo.contact.hours },
+  { id: "address", Icon: MapPin, text: siteInfo.address ?? [siteInfo.locality, siteInfo.region].filter(Boolean).join(", ") },
+  { id: "phone", Icon: Phone, text: siteInfo.phone },
+  { id: "email", Icon: Mail, text: siteInfo.email },
+  { id: "hours", Icon: Clock, text: siteInfo.hours },
 ] as const;
 
 export default function ContactSection() {
@@ -39,7 +43,7 @@ export default function ContactSection() {
           <SectionHeading eyebrow="Contact" title="Come train with us." />
           <address className="contact-meta" data-reveal style={stagger(2)}>
             <ul>
-              {contactDetails.map(({ id, Icon, text }) => (
+              {contactDetails.filter(({ text }) => text !== null).map(({ id, Icon, text }) => (
                 <li key={id}>
                   <Icon aria-hidden="true" />
                   <span>{text}</span>
@@ -49,14 +53,16 @@ export default function ContactSection() {
           </address>
           <div data-reveal style={stagger(3)}>
             <ContactForm />
-            <div className="map-frame">
-              <iframe
-                loading="lazy"
-                referrerPolicy="no-referrer"
-                src={mapSrc}
-                title={`Map of ${siteInfo.location}`}
-              />
-            </div>
+            {mapSrc && (
+              <div className="map-frame">
+                <iframe
+                  loading="lazy"
+                  referrerPolicy="no-referrer"
+                  src={mapSrc}
+                  title={`Map of ${[siteInfo.locality, siteInfo.region].filter(Boolean).join(", ")}`}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

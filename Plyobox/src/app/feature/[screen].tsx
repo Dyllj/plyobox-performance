@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import type { ReactNode } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { AppIcon } from '@/components/app-icon';
@@ -25,7 +25,8 @@ const screens: FeatureScreen[] = [
   'receipt',
   'payment-pending',
   'payment-rejected',
-  'payment-approved',
+  'payment-verified',
+  'privacy-notice',
   'check-in-result',
   'attendance',
   'trainer-profile',
@@ -54,7 +55,8 @@ const titles: Record<FeatureScreen, string> = {
   receipt: 'Receipt',
   'payment-pending': 'Payment pending',
   'payment-rejected': 'Payment needs attention',
-  'payment-approved': 'Payment approved',
+  'payment-verified': 'Payment verified',
+  'privacy-notice': 'Privacy notice',
   'check-in-result': 'Check-in complete',
   attendance: 'Attendance',
   'trainer-profile': 'Trainer profile',
@@ -130,8 +132,10 @@ function ScreenContent({ screen }: { screen: FeatureScreen }) {
       return <ReceiptContent />;
     case 'payment-pending':
     case 'payment-rejected':
-    case 'payment-approved':
+    case 'payment-verified':
       return <PaymentStateContent state={screen} />;
+    case 'privacy-notice':
+      return <PrivacyNoticeContent />;
     case 'check-in-result':
       return <CheckInResultContent />;
     case 'attendance':
@@ -184,7 +188,7 @@ function MembershipContent() {
         </View>
         <Text style={styles.muted}>30 days from activation · Expires 12 Dec</Text>
         <ProgressBar value={12} max={30} />
-        <Button label="Renew monthly" onPress={() => openFeature('checkout')} />
+        <Button label="Renew monthly" onPress={() => openFeature('checkout', { type: 'monthly' })} />
       </Panel>
       <SectionTitle title="Choose access" />
       <ChoiceCard
@@ -210,10 +214,13 @@ function MembershipContent() {
 }
 
 function CheckoutContent() {
-  const { plan: planParam } = useLocalSearchParams<{ plan?: string }>();
-  const [method, setMethod] = useState<'cash' | 'transfer'>('transfer');
+  const { type } = useLocalSearchParams<{ type?: string }>();
+  const [method, setMethod] = useState<'cash' | 'gcash' | 'maya' | 'bank'>('gcash');
   const [proofAdded, setProofAdded] = useState(false);
-  const plan = planParam === 'Daily Session' ? 'Daily Session' : 'Monthly Membership';
+  const plan = type === 'daily' ? 'Daily Session' : type === 'monthly' ? 'Monthly Membership' : null;
+  useEffect(() => {
+    if (!plan) router.replace('/feature/membership');
+  }, [plan]);
 
   return (
     <>
@@ -231,10 +238,22 @@ function CheckoutContent() {
       </Panel>
       <SectionTitle title="Payment method" />
       <SelectRow
-        title="Bank / e-wallet transfer"
-        detail="Follow the gym’s posted payment instructions."
-        selected={method === 'transfer'}
-        onPress={() => setMethod('transfer')}
+        title="GCash"
+        detail="Upload proof before submitting."
+        selected={method === 'gcash'}
+        onPress={() => setMethod('gcash')}
+      />
+      <SelectRow
+        title="Maya"
+        detail="Upload proof before submitting."
+        selected={method === 'maya'}
+        onPress={() => setMethod('maya')}
+      />
+      <SelectRow
+        title="Bank transfer"
+        detail="Upload proof before submitting."
+        selected={method === 'bank'}
+        onPress={() => setMethod('bank')}
       />
       <SelectRow
         title="Pay at the gym"
@@ -242,7 +261,7 @@ function CheckoutContent() {
         selected={method === 'cash'}
         onPress={() => setMethod('cash')}
       />
-      {method === 'transfer' ? (
+      {method !== 'cash' ? (
         <Panel style={styles.panelStack}>
           <Text style={styles.rowTitle}>Payment proof</Text>
           <Text style={styles.muted}>
@@ -260,9 +279,9 @@ function CheckoutContent() {
         This is a UI-only checkout. No payment is collected and no membership is activated.
       </PreviewNote>
       <Button
-        label={method === 'transfer' ? 'Submit for verification' : 'Continue'}
-        onPress={() => openFeature('payment-pending')}
-        disabled={method === 'transfer' && !proofAdded}
+        label={method === 'cash' ? 'Continue' : 'Submit for verification'}
+        onPress={() => openFeature('payment-pending', { paymentId: 'PAY-0081' })}
+        disabled={method !== 'cash' && !proofAdded}
       />
     </>
   );
@@ -274,7 +293,7 @@ function PaymentsContent() {
       <SectionTitle title="Recent payments" />
       <PaymentRow title="Monthly Membership" date="04 Nov · Reference shown in demo" state="Pending" />
       <PaymentRow title="Daily Session" date="22 Oct · Example entry" state="Verified" />
-      <Button label="View sample receipt" onPress={() => openFeature('receipt')} variant="outline" />
+      <Button label="View sample receipt" onPress={() => openFeature('receipt', { paymentId: 'PAY-0081' })} variant="outline" />
       <PreviewNote>Payment records shown here are sample UI content only.</PreviewNote>
     </>
   );
@@ -294,6 +313,17 @@ function PaymentRow({ title, date, state }: { title: string; date: string; state
   );
 }
 
+function PrivacyNoticeContent() {
+  return (
+    <Panel style={styles.panelStack}>
+      <Text style={styles.rowTitle}>Privacy Notice</Text>
+      <Text style={styles.muted}>
+        [PRIVACY NOTICE TEXT: to be supplied by the gym]
+      </Text>
+    </Panel>
+  );
+}
+
 function ReceiptContent() {
   return (
     <Panel style={styles.receipt}>
@@ -304,8 +334,8 @@ function ReceiptContent() {
       <Text style={styles.eyebrow}>PAYMENT RECEIPT · SAMPLE</Text>
       <Text style={styles.receiptTitle}>Monthly Membership</Text>
       <View style={styles.divider} />
-      <Fact label="Member" value="Mika · Demo member" />
-      <Fact label="Reference" value="PLY-DEMO-0001" />
+      <Fact label="Member" value="Mara Santos" />
+      <Fact label="Reference" value="PAY-0081" />
       <Fact label="Status" value="Awaiting verification" />
       <Fact label="Access" value="Not activated" />
       <PreviewNote>Sample receipt preview. Not a proof of payment.</PreviewNote>
@@ -314,7 +344,7 @@ function ReceiptContent() {
   );
 }
 
-function PaymentStateContent({ state }: { state: 'payment-pending' | 'payment-rejected' | 'payment-approved' }) {
+function PaymentStateContent({ state }: { state: 'payment-pending' | 'payment-rejected' | 'payment-verified' }) {
   const config = {
     'payment-pending': {
       icon: 'clock' as const,
@@ -328,7 +358,7 @@ function PaymentStateContent({ state }: { state: 'payment-pending' | 'payment-re
       detail: 'The submitted proof could not be verified. Review the instructions or ask staff for help.',
       tone: 'danger' as const,
     },
-    'payment-approved': {
+    'payment-verified': {
       icon: 'check-circle' as const,
       title: 'Payment verified',
       detail: 'In the live app, access dates begin after verification is recorded by authorized staff.',
@@ -348,13 +378,13 @@ function PaymentStateContent({ state }: { state: 'payment-pending' | 'payment-re
       {state === 'payment-pending' ? (
         <View style={styles.previewActionGroup}>
           <Button
-            label="Preview staff approval"
-            onPress={() => openFeature('payment-approved')}
+            label="Preview staff verification"
+            onPress={() => openFeature('payment-verified', { paymentId: 'PAY-0081' })}
             variant="outline"
           />
           <Button
             label="Preview declined proof"
-            onPress={() => openFeature('payment-rejected')}
+            onPress={() => openFeature('payment-rejected', { paymentId: 'PAY-0079' })}
             variant="quiet"
           />
         </View>
@@ -377,7 +407,7 @@ function CheckInResultContent() {
         and membership before recording a visit.
       </Text>
       <Panel style={styles.checkinDetails}>
-        <Fact label="Member" value="PLY-0001" />
+        <Fact label="Member no." value="PLY-0042" />
         <Fact label="Check-in" value="Today · 9:14 AM" />
         <Fact label="Membership" value="Monthly · Active" />
       </Panel>
@@ -441,7 +471,7 @@ function TrainerProfileContent() {
       </Panel>
       <SectionTitle title="Services" />
       <ChoiceCard icon="dumbbell" title="1-on-1 Strength" detail="Session length and rate set by trainer" action="Request session" />
-      <Button label="Request a session" onPress={() => openFeature('booking')} />
+      <Button label="Request a session" onPress={() => openFeature('booking', { trainerId: 'TRN-001' })} />
       <PreviewNote>Trainer details are sample UI content, not published profiles.</PreviewNote>
     </>
   );
@@ -602,13 +632,13 @@ function ProfileContent() {
       <Panel style={styles.profilePanel}>
         <View style={styles.profileAvatar}><AppIcon name="person" color={colors.accent} size={25} /></View>
         <View style={styles.flex}>
-          <Text style={styles.rowTitle}>Mika · Demo member</Text>
-          <Text style={styles.tinyMuted}>PLY-0001 · Sample account</Text>
+          <Text style={styles.rowTitle}>Mara Santos · Member</Text>
+          <Text style={styles.tinyMuted}>PLY-0042 · Sample account</Text>
         </View>
         <Badge tone="neutral">MEMBER</Badge>
       </Panel>
       <SectionTitle title="Personal information" />
-      <Field label="Full name" placeholder="Mika · Demo member" />
+      <Field label="Full name" placeholder="Mara Santos" />
       <Field label="Email" placeholder="member@example.com" />
       <Field label="Phone" placeholder="+63 9XX XXX XXXX" keyboardType="phone-pad" />
       <Field label="Emergency contact" placeholder="Not provided" />
@@ -631,7 +661,7 @@ function SettingsContent() {
       <ToggleRow title="Email updates" detail="Membership and booking notices" value={emailOn} onPress={() => setEmailOn((value) => !value)} />
       <ToggleRow title="Push notifications" detail="Time-sensitive app updates" value={pushOn} onPress={() => setPushOn((value) => !value)} />
       <SectionTitle title="Privacy" />
-      <ListRow icon="lock" title="Privacy notice" detail="How member information is used" onPress={() => openFeature('community')} />
+      <ListRow icon="lock" title="Privacy notice" detail="How member information is used" onPress={() => openFeature('privacy-notice')} />
       <ListRow icon="account" title="Data and account" detail="Manage profile and account access" onPress={() => openFeature('profile')} />
       <PreviewNote>Settings are local UI controls only. No notification preferences are saved.</PreviewNote>
     </>
@@ -704,23 +734,23 @@ function TrainerDashboardContent() {
       <SectionTitle title="Manage your studio" />
       <ListRow icon="calendar" title="Booking requests" detail="Review and respond to session requests" onPress={() => openFeature('trainer-requests')} />
       <ListRow icon="person" title="Clients & plans" detail="Client list and workout plans" onPress={() => openFeature('clients')} />
-      <ListRow icon="edit" title="Trainer profile" onPress={() => openFeature('trainer-edit')} />
-      <ListRow icon="cash" title="Services & rates" onPress={() => openFeature('trainer-services')} />
-      <ListRow icon="clock" title="Availability" onPress={() => openFeature('trainer-availability')} />
+      <ListRow icon="edit" title="Trainer profile" onPress={() => openFeature('trainer-edit', { trainerId: 'TRN-001' })} />
+      <ListRow icon="cash" title="Services & rates" onPress={() => openFeature('trainer-services', { trainerId: 'TRN-001' })} />
+      <ListRow icon="clock" title="Availability" onPress={() => openFeature('trainer-availability', { trainerId: 'TRN-001' })} />
     </>
   );
 }
 
 function TrainerRequestsContent() {
-  const [status, setStatus] = useState<'pending' | 'accepted' | 'declined'>('pending');
+  const [status, setStatus] = useState<'pending' | 'confirmed' | 'declined'>('pending');
   return (
     <>
       <SectionTitle title="New requests" />
       <Panel style={styles.panelStack}>
         <View style={styles.rowBetween}>
-          <Text style={styles.rowTitle}>Mika · Demo member</Text>
+          <Text style={styles.rowTitle}>Mara Santos · Member</Text>
           <Badge
-            tone={status === 'pending' ? 'warning' : status === 'accepted' ? 'success' : 'danger'}>
+            tone={status === 'pending' ? 'warning' : status === 'confirmed' ? 'success' : 'danger'}>
             {status.toUpperCase()}
           </Badge>
         </View>
@@ -728,7 +758,7 @@ function TrainerRequestsContent() {
         <Text style={styles.tinyMuted}>Sent today · 9:20 AM</Text>
         {status === 'pending' ? (
           <View style={styles.actionRow}>
-            <Button label="Accept" onPress={() => setStatus('accepted')} />
+            <Button label="Confirm" onPress={() => setStatus('confirmed')} />
             <Button label="Decline" onPress={() => setStatus('declined')} variant="outline" />
           </View>
         ) : (
@@ -837,7 +867,7 @@ function ClientsContent() {
   return (
     <>
       <SectionTitle title="Active clients" />
-      <ClientCard name="Mika · Demo member" detail="Strength plan · Last session Nov 14" />
+      <ClientCard name="Mara Santos" detail="Strength plan · Last session Nov 14" />
       <ClientCard name="Taylor · Sample client" detail="Power & movement · Last session Nov 12" />
       <PreviewNote>Client list and workout assignments shown here are sample trainer data.</PreviewNote>
     </>
@@ -912,7 +942,15 @@ function ChoiceCard({
       </View>
       <Button
         label={action}
-        onPress={() => openFeature(feature, plan ? { plan } : undefined)}
+        onPress={() => {
+          if (feature === 'checkout') {
+            openFeature('checkout', { type: plan === 'daily' ? 'daily' : 'monthly' });
+          } else if (feature === 'workout-detail') {
+            openFeature('workout-detail', { workoutId: 'WK-001' });
+          } else {
+            openFeature(feature as 'payments');
+          }
+        }}
         variant="outline"
       />
     </Panel>

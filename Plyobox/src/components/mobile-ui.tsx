@@ -2,6 +2,8 @@ import type { PropsWithChildren, ReactNode } from 'react';
 import { router, type Href } from 'expo-router';
 import {
   Pressable,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -23,11 +25,15 @@ type PageProps = PropsWithChildren<{
   rightAction?: ReactNode;
   header?: ReactNode;
   wide?: boolean;
+  tabbed?: boolean;
 }>;
 
-export function Page({ title, subtitle, backHref, rightAction, header, wide, children }: PageProps) {
+export function Page({ title, subtitle, backHref, rightAction, header, wide, tabbed = false, children }: PageProps) {
   return (
-    <SafeAreaView edges={['top', 'left', 'right', 'bottom']} style={styles.safeArea}>
+    <SafeAreaView edges={tabbed ? ['top', 'left', 'right'] : ['top', 'left', 'right', 'bottom']} style={styles.safeArea}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={styles.keyboardAvoiding}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
@@ -50,6 +56,7 @@ export function Page({ title, subtitle, backHref, rightAction, header, wide, chi
           {children}
         </View>
       </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -61,7 +68,7 @@ export function Brand({ inverse = false }: { inverse?: boolean }) {
         <Text style={[styles.brandLetter, inverse && styles.brandLetterInverse]}>P</Text>
       </View>
       <View>
-        <Text style={styles.brandName}>PLYObox</Text>
+        <Text style={styles.brandName}>Plyobox</Text>
         <Text style={styles.brandCaption}>PERFORMANCE GYM</Text>
       </View>
     </View>
@@ -73,7 +80,15 @@ export function BackButton({ href, label = 'Go back' }: { href?: Href; label?: s
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={label}
-      onPress={() => (href ? router.replace(href) : router.back())}
+      onPress={() => {
+        if (href) {
+          router.replace(href);
+        } else if (router.canGoBack()) {
+          router.back();
+        } else {
+          router.replace('/member');
+        }
+      }}
       style={({ pressed }) => [styles.backButton, pressed && styles.pressed]}>
       <AppIcon name="arrow-back" color={colors.text} size={18} />
     </Pressable>
@@ -169,9 +184,11 @@ export function IconButton({
 export function Field({
   label,
   style,
+  error,
   ...props
 }: TextInputProps & {
   label: string;
+  error?: string;
 }) {
   return (
     <View style={styles.field}>
@@ -180,9 +197,11 @@ export function Field({
         accessibilityLabel={label}
         placeholderTextColor={colors.subtle}
         selectionColor={colors.accent}
-        style={[styles.input, style]}
+        accessibilityLiveRegion={error ? 'polite' : undefined}
+        style={[styles.input, error ? styles.inputError : undefined, style]}
         {...props}
       />
+      {error ? <Text style={styles.fieldError}>{error}</Text> : null}
     </View>
   );
 }
@@ -341,6 +360,9 @@ export const mobileUiStyles = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
+  keyboardAvoiding: {
+    flex: 1,
+  },
   safeArea: {
     flex: 1,
     backgroundColor: colors.background,
@@ -521,6 +543,13 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     color: colors.text,
     fontSize: 13,
+  },
+  inputError: {
+    borderColor: colors.danger,
+  },
+  fieldError: {
+    color: colors.danger,
+    fontSize: 11,
   },
   panel: {
     padding: 16,
