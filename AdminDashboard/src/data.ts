@@ -70,12 +70,12 @@ export const weeklyRevenue = [
 ];
 
 export const members = [
-  { id: "PLY-0042", name: "Mara Santos", plan: "Monthly", status: "Active", expires: "Today" },
-  { id: "PLY-0037", name: "Eli Navarro", plan: "Daily", status: "Active", expires: "Today" },
-  { id: "PLY-0031", name: "Jules Reyes", plan: "Monthly", status: "Active", expires: "Nov 25" },
-  { id: "PLY-0028", name: "Nico Flores", plan: "Monthly", status: "Expired", expires: "Nov 18" },
-  { id: "PLY-0022", name: "Sam Dizon", plan: "Daily", status: "Active", expires: "Today" },
-  { id: "PLY-0018", name: "Alex Lim", plan: "Monthly", status: "Suspended", expires: "—" },
+  { id: "PLY-0042", name: "Mara Santos", plan: "monthly", status: "Active", expires: "Today" },
+  { id: "PLY-0037", name: "Eli Navarro", plan: "daily", status: "Active", expires: "Today" },
+  { id: "PLY-0031", name: "Jules Reyes", plan: "monthly", status: "Active", expires: "Nov 25" },
+  { id: "PLY-0028", name: "Nico Flores", plan: "monthly", status: "Expired", expires: "Nov 18" },
+  { id: "PLY-0022", name: "Sam Dizon", plan: "daily", status: "Active", expires: "Today" },
+  { id: "PLY-0018", name: "Alex Lim", plan: "monthly", status: "Suspended", expires: "—" },
 ];
 
 export const pendingPayments = [
@@ -85,16 +85,16 @@ export const pendingPayments = [
 ];
 
 export const expiringMembers = [
-  { name: "Mara Santos", plan: "Monthly", date: "Today", days: "Today" },
-  { name: "Jules Reyes", plan: "Monthly", date: "Nov 23", days: "2 days" },
-  { name: "Toni Garcia", plan: "Monthly", date: "Nov 25", days: "4 days" },
+  { name: "Mara Santos", plan: "monthly", date: "Today", days: "Today" },
+  { name: "Jules Reyes", plan: "monthly", date: "Nov 23", days: "2 days" },
+  { name: "Toni Garcia", plan: "monthly", date: "Nov 25", days: "4 days" },
 ];
 
 export const attendanceToday = [
-  { time: "9:02 AM", name: "Mara Santos", id: "PLY-0042", access: "Monthly", source: "QR" },
-  { time: "8:40 AM", name: "Eli Navarro", id: "PLY-0037", access: "Daily", source: "QR" },
-  { time: "8:15 AM", name: "Toni Garcia", id: "PLY-0014", access: "Monthly", source: "Staff" },
-  { time: "7:50 AM", name: "Sam Dizon", id: "PLY-0022", access: "Daily", source: "QR" },
+  { time: "9:02 AM", name: "Mara Santos", id: "PLY-0042", access: "monthly", source: "QR" },
+  { time: "8:40 AM", name: "Eli Navarro", id: "PLY-0037", access: "daily", source: "QR" },
+  { time: "8:15 AM", name: "Toni Garcia", id: "PLY-0014", access: "monthly", source: "Staff" },
+  { time: "7:50 AM", name: "Sam Dizon", id: "PLY-0022", access: "daily", source: "QR" },
 ];
 
 export const activities = [

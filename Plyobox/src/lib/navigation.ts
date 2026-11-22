@@ -1,4 +1,4 @@
-import { router, type Href } from 'expo-router';
+import { router } from 'expo-router';
 import type { MembershipType } from '@/lib/shared/contract';
 
 export const FEATURE_SCREENS = [
@@ -80,5 +80,8 @@ export function openFeature<T extends FeatureScreen>(
   ...args: FeatureParams[T] extends undefined ? [params?: undefined] : [params: FeatureParams[T]]
 ) {
   const params = args[0];
-  router.push({ pathname: '/feature/[screen]' as Href, params: { screen, ...(params as object ?? {}) } });
+  router.push({
+    pathname: '/feature/[screen]',
+    params: { screen, ...(params as object ?? {}) },
+  } as never);
 }

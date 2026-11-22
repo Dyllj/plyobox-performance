@@ -14,6 +14,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Image } from 'expo-image';
 
 import { AppIcon, type AppIconName } from '@/components/app-icon';
 import { Layout, PlyoboxTheme as colors } from '@/constants/plyobox-theme';
@@ -65,7 +66,11 @@ export function Brand({ inverse = false }: { inverse?: boolean }) {
   return (
     <View style={styles.brand}>
       <View style={[styles.brandMark, inverse && styles.brandMarkInverse]}>
-        <Text style={[styles.brandLetter, inverse && styles.brandLetterInverse]}>P</Text>
+        <Image
+          accessibilityLabel="Plyobox Performance Gym"
+          source={require('@/assets/images/logo.png')}
+          style={{ width: 38, height: 38 }}
+        />
       </View>
       <View>
         <Text style={styles.brandName}>Plyobox</Text>

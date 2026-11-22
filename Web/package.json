@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "sync:shared": "node ../shared/sync.mjs",
+    "check:shared": "node ../shared/check.mjs"
   },
   "dependencies": {
     "lucide-react": "^1.77.0",

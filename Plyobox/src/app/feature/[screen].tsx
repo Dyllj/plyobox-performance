@@ -1,6 +1,7 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
+import { Image } from 'expo-image';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { AppIcon } from '@/components/app-icon';
@@ -17,6 +18,7 @@ import {
 } from '@/components/mobile-ui';
 import { PlyoboxTheme as colors } from '@/constants/plyobox-theme';
 import { MEMBER_HOME_ROUTE, openFeature, type FeatureScreen } from '@/lib/navigation';
+import { MEMBERSHIP_LABEL } from '@/lib/shared/contract';
 
 const screens: FeatureScreen[] = [
   'membership',
@@ -193,17 +195,17 @@ function MembershipContent() {
       <SectionTitle title="Choose access" />
       <ChoiceCard
         icon="calendar"
-        title="Daily Session"
+        title={MEMBERSHIP_LABEL.daily}
         detail="One entry. Expires at midnight."
         action="Choose daily pass"
-        plan="Daily Session"
+        plan="daily"
       />
       <ChoiceCard
         icon="wallet"
-        title="Monthly Membership"
+        title={MEMBERSHIP_LABEL.monthly}
         detail="Valid for 30 days after verified activation."
         action="Choose monthly"
-        plan="Monthly Membership"
+        plan="monthly"
       />
       <PreviewNote>
         Prices are set by the gym. Payment proof does not activate access until authorized
@@ -217,7 +219,7 @@ function CheckoutContent() {
   const { type } = useLocalSearchParams<{ type?: string }>();
   const [method, setMethod] = useState<'cash' | 'gcash' | 'maya' | 'bank'>('gcash');
   const [proofAdded, setProofAdded] = useState(false);
-  const plan = type === 'daily' ? 'Daily Session' : type === 'monthly' ? 'Monthly Membership' : null;
+  const plan = type === 'daily' ? MEMBERSHIP_LABEL.daily : type === 'monthly' ? MEMBERSHIP_LABEL.monthly : null;
   useEffect(() => {
     if (!plan) router.replace('/feature/membership');
   }, [plan]);
@@ -231,7 +233,7 @@ function CheckoutContent() {
           <Text style={styles.accentText}>Price set by gym</Text>
         </View>
         <Text style={styles.muted}>
-          {plan === 'Daily Session'
+          {plan === MEMBERSHIP_LABEL.daily
             ? 'One entry · Expires at midnight'
             : '30 days from approved payment verification'}
         </Text>
@@ -291,8 +293,8 @@ function PaymentsContent() {
   return (
     <>
       <SectionTitle title="Recent payments" />
-      <PaymentRow title="Monthly Membership" date="04 Nov · Reference shown in demo" state="Pending" />
-      <PaymentRow title="Daily Session" date="22 Oct · Example entry" state="Verified" />
+      <PaymentRow title={MEMBERSHIP_LABEL.monthly} date="04 Nov · Reference shown in demo" state="Pending" />
+      <PaymentRow title={MEMBERSHIP_LABEL.daily} date="22 Oct · Example entry" state="Verified" />
       <Button label="View sample receipt" onPress={() => openFeature('receipt', { paymentId: 'PAY-0081' })} variant="outline" />
       <PreviewNote>Payment records shown here are sample UI content only.</PreviewNote>
     </>
@@ -328,8 +330,8 @@ function ReceiptContent() {
   return (
     <Panel style={styles.receipt}>
       <View style={styles.receiptBrand}>
-        <View style={styles.receiptMark}><Text style={styles.receiptMarkText}>P</Text></View>
-        <Text style={styles.receiptBrandName}>PLYObox</Text>
+        <Image accessibilityLabel="Plyobox Performance Gym" source={require('@/assets/images/logo.png')} style={{ width: 38, height: 38 }} />
+        <Text style={styles.receiptBrandName}>Plyobox</Text>
       </View>
       <Text style={styles.eyebrow}>PAYMENT RECEIPT · SAMPLE</Text>
       <Text style={styles.receiptTitle}>Monthly Membership</Text>
@@ -878,7 +880,7 @@ function ClientCard({ name, detail }: { name: string; detail: string }) {
   return (
     <Pressable
       accessibilityRole="button"
-      onPress={() => openFeature('workout-detail')}
+      onPress={() => openFeature('workout-detail', { workoutId: 'WK-001' })}
       style={styles.clientCard}>
       <View style={styles.profileAvatar}><AppIcon name="person" color={colors.accent} size={19} /></View>
       <View style={styles.flex}>

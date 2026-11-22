@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "sync:shared": "node ../shared/sync.mjs",
+    "check:shared": "node ../shared/check.mjs"
   },
   "devDependencies": {
     "@types/react": "^19.3.0",

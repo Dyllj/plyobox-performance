@@ -28,7 +28,7 @@ import {
   weeklyRevenue,
   type SectionId,
 } from "../data";
-import { STAFF_ROLE_LABEL, QR_ROTATION_SECONDS } from "../shared/contract";
+import { STAFF_ROLE_LABEL, QR_ROTATION_SECONDS, MEMBERSHIP_LABEL, MEMBERSHIP_SHORT } from "../shared/contract";
 import { createSeed } from "../shared/seed";
 
 type ModuleViewProps = {
@@ -63,7 +63,7 @@ const inquiryRows = [
 const auditRows = [
   { time: "Today · 9:02 AM", user: "Alex Villanueva", action: "Verified payment", record: "PAY-0081", type: "Payments" },
   { time: "Today · 8:41 AM", user: "Jamie Flores", action: "Manual check-in", record: "PLY-0014", type: "Attendance" },
-  { time: "Today · 8:16 AM", user: "Alex Villanueva", action: "Changed membership price", record: "Monthly Membership", type: "Pricing" },
+  { time: "Today · 8:16 AM", user: "Alex Villanueva", action: "Changed membership price", record: MEMBERSHIP_LABEL.monthly, type: "Pricing" },
   { time: "Today · 7:55 AM", user: "Alex Villanueva", action: "Added staff account", record: "Jamie Flores", type: "Accounts" },
   { time: "Yesterday · 5:24 PM", user: "Alex Villanueva", action: "Suspended trainer", record: "Noah Bautista", type: "Trainers" },
   { time: "Yesterday · 3:10 PM", user: "Jamie Flores", action: "Rejected payment", record: "PAY-0076", type: "Payments" },
@@ -176,9 +176,9 @@ function MembersView({ search, onToast }: { search: string; onToast: (message: s
               <SimpleTable
                 columns={["TYPE", "START", "ENDS", "STATUS"]}
                 rows={[
-                  ["Monthly", "Nov 1, 2026", "Nov 30, 2026", selectedMember.status],
-                  ["Daily", "Oct 18, 2026", "Oct 18, 2026", "Expired"],
-                  ["Monthly", "Sep 1, 2026", "Sep 30, 2026", "Expired"],
+                  [MEMBERSHIP_SHORT.monthly, "Nov 1, 2026", "Nov 30, 2026", selectedMember.status],
+                  [MEMBERSHIP_SHORT.daily, "Oct 18, 2026", "Oct 18, 2026", "Expired"],
+                  [MEMBERSHIP_SHORT.monthly, "Sep 1, 2026", "Sep 30, 2026", "Expired"],
                 ]}
               />
               <button className="button button-primary detail-action" onClick={() => onToast("Payment entry is a prototype action; nothing was saved.")} type="button">
@@ -397,7 +397,7 @@ function PricingView({ onToast }: { onToast: (message: string) => void }) {
       <PageIntro eyebrow="OWNER SETTINGS" title="Pricing" description="Update the two membership options available to members." />
       <div className="owner-banner"><ShieldCheck size={18} /><div><strong>Owner-only settings</strong><span>Changes apply to new purchases. Existing memberships keep their original price.</span></div></div>
       <div className="pricing-grid">
-        {[{ name: "Daily Session", value: daily, setter: setDaily, suffix: "per visit", hint: "Valid until the end of the purchase day (Asia/Manila)." }, { name: "Monthly Membership", value: monthly, setter: setMonthly, suffix: "per 30 days", hint: "Valid for 30 days from the day payment is verified." }].map((plan) => (
+        {[{ name: MEMBERSHIP_LABEL.daily, value: daily, setter: setDaily, suffix: "per session", hint: "Access ends at midnight on the day your payment is verified." }, { name: MEMBERSHIP_LABEL.monthly, value: monthly, setter: setMonthly, suffix: "per 30 days", hint: "Valid for 30 calendar days from the verified Manila date." }].map((plan) => (
           <article className="panel pricing-card" key={plan.name}>
             <div className="panel-heading"><div><p className="eyebrow">MEMBERSHIP TYPE</p><h3>{plan.name}</h3></div><StatusPill value="Active" /></div>
             <label className="field-label">Price <span>PHP</span><div className="price-input"><span>₱</span><input inputMode="decimal" onChange={(event) => plan.setter(event.target.value)} value={plan.value} /></div></label>

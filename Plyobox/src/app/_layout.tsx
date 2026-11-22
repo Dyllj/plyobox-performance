@@ -17,7 +17,7 @@ export default function RootLayout() {
 
 function AppLayout() {
   const pathname = usePathname();
-  const { status, isTrainer } = useSession();
+  const { status } = useSession();
   const feature = FEATURE_SCREENS.find((screen) => pathname.endsWith(`/feature/${screen}`));
   const tabsHidden = pathname === '/' || pathname === '/register' || pathname === '/forgot-password' ||
     (feature ? FEATURE_META[feature].hideTabs === true : false);

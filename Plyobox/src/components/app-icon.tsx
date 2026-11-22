@@ -1,4 +1,7 @@
 import { SymbolView } from 'expo-symbols';
+import { Text } from 'react-native';
+
+// iOS 16+ is needed for "banknote" and "figure.strengthtraining.traditional".
 
 export type AppIconName =
   | 'account'
@@ -84,6 +87,7 @@ export function AppIcon({ name, size = 20, color }: AppIconProps) {
       tintColor={color}
       size={size}
       style={{ width: size, height: size }}
+      fallback={<Text style={{ color, fontSize: size }}>•</Text>}
     />
   );
 }
